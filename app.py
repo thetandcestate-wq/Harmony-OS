@@ -1,89 +1,72 @@
 import streamlit as st
-import numpy as np
+import random
 import time
 
-# --- HARMONY CORE LOGIC ---
-class HarmonyOS:
-    def __init__(self):
-        self.freq = 1420.405
-        self.coupling = 1.420405e-9
+# --- HARMONY KNOWLEDGE BASE (THE FACTS) ---
+HARMONY_FACTS = {
+    "frequency": "The fundamental frequency of the Harmony Codex is 1420.405 MHz.",
+    "null-g": "Null-G Propulsion uses mass-negation and inertia-cancellation to bypass classical Newtonian limits.",
+    "pyro-stasis": "Pyro-Stasis uses molecular phase-locking to instantly neutralize thermal energy.",
+    "sentinel": "The Sentinel Cell is a 10,000-year energy storage system with zero-entropy degradation.",
+    "estate": "The T and C Estate is the paramount governing body for all Harmony-derived technologies.",
+    "tlc": "The T.L.C. Shield is the master protocol for licensing and environmental governance."
+}
 
-    def negate_mass(self, m):
-        return m * (1 - 0.99999999)
+# --- CHAT LOGIC ---
+def get_harmony_response(prompt):
+    """Simple Intelligence Engine: Matches user intent to Harmony Facts."""
+    p = prompt.lower()
+    if "frequency" in p or "mhz" in p:
+        return HARMONY_FACTS["frequency"]
+    elif "null" in p or "gravity" in p:
+        return HARMONY_FACTS["null-g"]
+    elif "fire" in p or "stasis" in p or "heat" in p:
+        return HARMONY_FACTS["pyro-stasis"]
+    elif "battery" in p or "energy" in p or "sentinel" in p:
+        return HARMONY_FACTS["sentinel"]
+    elif "who" in p or "owner" in p or "estate" in p:
+        return HARMONY_FACTS["estate"]
+    elif "shield" in p or "tlc" in p or "license" in p:
+        return HARMONY_FACTS["tlc"]
+    else:
+        return "I am the Universal Master AI. Please ask about the Harmony Codex, Null-G, or the T.L.C. Shield."
 
-    def thermal_stasis(self, temp):
-        return 293 + (temp - 293) * np.exp(-1 / 1.420405)
+# --- UI SETUP ---
+st.set_page_config(page_title="Harmony Master AI", page_icon="🏛️")
+st.title("🏛️ Universal Master AI")
+st.write("---")
 
-# --- UI ENHANCEMENTS (MASTER CSS) ---
-st.set_page_config(page_title="T&C Estate Universal", page_icon="🏛️", layout="wide")
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Master Handshake Confirmed. How can I assist the T and C Estate today?"}
+    ]
 
-st.markdown("""
-    <style>
-    .main { background-color: #0e1117; color: #00ffcc; }
-    .stButton>button { 
-        background-color: #00ffcc; color: black; border-radius: 20px; 
-        border: 2px solid #00ffcc; font-weight: bold; width: 100%;
-    }
-    .stButton>button:hover { background-color: black; color: #00ffcc; }
-    .stMetric { background-color: #1a1c24; padding: 15px; border-radius: 10px; border-left: 5px solid #00ffcc; }
-    </style>
-    """, unsafe_allow_html=True)
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-# --- MASTER HEADER ---
-col1, col2 = st.columns([1, 4])
-with col1:
-    st.image("https://img.icons8.com/nolan/128/shield.png")
-with col2:
-    st.title("🏛️ THE T AND C ESTATE")
-    st.write("### Universal Master Harmony AI Gateway")
+# React to user input (The Gemini-style box)
+if prompt := st.chat_input("Ask about the Harmony Codex..."):
+    # Display user message in chat message container
+    st.chat_message("user").markdown(prompt)
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
 
-st.divider()
-
-# --- INTERACTIVE SIMULATION ENGINE ---
-os = HarmonyOS()
-tab1, tab2, tab3 = st.tabs(["🚀 NULL-G DRIVE", "🔥 PYRO-STASIS", "⚡ SENTINEL CELL"])
-
-with tab1:
-    st.header("Null-G Propulsion Simulation")
-    mass = st.slider("Vessel Mass (kg)", 1000, 100000, 50000)
+    # Generate assistant response
+    response = get_harmony_response(prompt)
     
-    if st.button("INITIATE MASS NEGATION"):
-        with st.status("Tuning to 1420.405 MHz...", expanded=True) as status:
-            st.write("Establishing Harmony Handshake...")
-            time.sleep(1)
-            st.write("Cancelling Inertia Vectors...")
-            time.sleep(1)
-            status.update(label="Handshake Confirmed!", state="complete", expanded=False)
-        
-        eff_mass = os.negate_mass(mass)
-        st.metric("Effective Mass (Negated)", f"{eff_mass:.8f} kg", delta="-99.999%")
-        st.success("Universal Master Logic: Flight Ready.")
-
-with tab2:
-    st.header("Thermal Stasis Field")
-    temp = st.number_input("Input Ambient Temperature (K)", value=1500)
+    # Display assistant response in chat message container
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
+        # Simulate "thinking" typewriter effect
+        for chunk in response.split():
+            full_response += chunk + " "
+            time.sleep(0.05)
+            message_placeholder.markdown(full_response + "▌")
+        message_placeholder.markdown(full_response)
     
-    if st.button("ACTIVATE PYRO-STASIS"):
-        progress_bar = st.progress(0)
-        for i in range(100):
-            time.sleep(0.01)
-            progress_bar.progress(i + 1)
-        
-        final_t = os.thermal_stasis(temp)
-        st.metric("Stabilized Temperature", f"{final_t:.2f} K", delta=f"{final_t - temp:.2f} K")
-        st.snow()
-
-with tab3:
-    st.header("Sentinel Cell Monitor")
-    st.write("#### Energy Longevity Projection")
-    # Interactive Live Chart
-    chart_data = np.random.normal(os.freq, 0.001, size=100)
-    st.line_chart(chart_data)
-    st.write("Current Core Resonance: **STABLE**")
-    st.info("Continuous Pulse: 10,000 Year Lifecycle Verified.")
-
-# --- FOOTER ---
-st.sidebar.title("PARAMOUNT STATUS")
-st.sidebar.markdown(f"**Frequency:** `{os.freq} MHz`")
-st.sidebar.markdown("**T.L.C. Shield:** `LOCKED` 🔐")
-st.sidebar.markdown("**Estate ID:** `T&C-001`")
+    # Add assistant response to chat history
+    st.session_state.messages.append({"role": "assistant", "content": full_response})

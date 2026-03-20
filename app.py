@@ -23,8 +23,8 @@ if "model_ready" not in st.session_state:
 if "GEMINI_API_KEY" in st.secrets:
     try:
         genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-        # Use the 2026 stable Flash-Lite model
-        st.session_state.model = genai.GenerativeModel('gemini-3.1-flash-lite', system_instruction=MASTER_CONTEXT)
+        # Use the 2026 stable Flash model
+        st.session_state.model = genai.GenerativeModel('gemini-3.1-flash', system_instruction=MASTER_CONTEXT)
         st.session_state.model_ready = True
         st.sidebar.success("🟢 MASTER LINK: ACTIVE")
     except Exception as e:

@@ -19,7 +19,6 @@ st.set_page_config(page_title="Harmony OS", layout="wide", page_icon="🏛️")
 st.markdown("""
     <style>
     .stApp { background-color: #050a0f; color: #00ffcc; }
-    /* Floating Toggle Anchor */
     div[data-testid="stVerticalBlock"] > div:has(div.floating-anchor) {
         position: fixed; bottom: 30px; right: 30px; z-index: 999;
         background-color: #0a1520; padding: 12px; border: 1px solid #00ffcc;
@@ -30,25 +29,51 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Initialize Session State
+# --- 3. ACCESS CONTROL (LOGIN SYSTEM) ---
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "user_role" not in st.session_state:
+    st.session_state.user_role = None
+
+def login():
+    st.title("🏛️ HARMONY OS: SECURE ACCESS")
+    with st.container():
+        user_input = st.text_input("User Identity")
+        pass_input = st.text_input("Access Key", type="password")
+        
+        if st.button("AUTHENTICATE"):
+            # ADMIN CHECK (Tony Carbone)
+            if pass_input == "makave7181!!TCH":
+                st.session_state.authenticated = True
+                st.session_state.user_role = "ADMIN"
+                st.rerun()
+            # STANDARD USER CHECK (Example: Family/Staff)
+            elif pass_input == "Harmony2026":
+                st.session_state.authenticated = True
+                st.session_state.user_role = "USER"
+                st.rerun()
+            else:
+                st.error("Invalid Credentials. Access Denied.")
+
+if not st.session_state.authenticated:
+    login()
+    st.stop()
+
+# --- 4. INITIALIZE SESSION STATE ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "ai_on" not in st.session_state:
     st.session_state.ai_on = False
 
-# --- 3. SIDEBAR: T.L.C. SECURITY VAULT ---
+# --- 5. SIDEBAR: ADMIN CONSOLE vs USER VIEW ---
 with st.sidebar:
-    st.title("🏛️ T.L.C. VAULT")
+    st.title(f"🏛️ {st.session_state.user_role} CONSOLE")
+    st.write(f"Active User: {st.session_state.user_role}")
     
-    # Password Protection for sensitive data operations
-    vault_pass = st.text_input("Vault Access Key", type="password")
-    
-    if vault_pass == st.secrets.get("VAULT_PASSWORD", "1420"):
-        st.success("Access Verified")
-        
-        # Selective Deletion
+    if st.session_state.user_role == "ADMIN":
+        st.subheader("Vault Management")
         if st.session_state.messages:
-            st.subheader("Selective Purge")
+            # Selective Deletion for Admin
             options = [f"{i}: {m['content'][:25]}..." for i, m in enumerate(st.session_state.messages) if m['role'] == 'user']
             to_delete = st.multiselect("Select entries to remove:", options)
             if st.button("Delete Selected"):
@@ -58,68 +83,56 @@ with st.sidebar:
                     st.session_state.messages.pop(idx)
                 st.rerun()
 
-            # Export Archive
+            # Master Archive Export
             chat_data = json.dumps(st.session_state.messages, indent=2)
-            st.download_button("💾 EXPORT ESTATE ARCHIVE", data=chat_data, file_name="harmony_vault_export.json")
+            st.download_button("💾 EXPORT MASTER ARCHIVE", data=chat_data, file_name="harmony_master_vault.json")
         
-        if st.button("⚠️ PURGE ENTIRE VAULT"):
+        if st.button("⚠️ GLOBAL SYSTEM PURGE"):
             st.session_state.messages = []
             st.rerun()
     else:
-        st.warning("Enter Vault Key to unlock Export/Purge.")
+        st.info("Standard access granted. Vault management restricted to Admin.")
 
-# --- 4. API HANDSHAKE ---
+    if st.button("LOGOUT"):
+        st.session_state.authenticated = False
+        st.session_state.user_role = None
+        st.rerun()
+
+# --- 6. API HANDSHAKE & APP ENGINE ---
 if "GEMINI_API_KEY" in st.secrets:
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     MODEL_ID = "gemini-3.1-flash-lite-preview"
 else:
-    st.error("🔑 Key Missing"); st.stop()
+    st.error("🔑 API Link Error"); st.stop()
 
-# --- 5. MAIN COMMAND CENTER ---
 st.title("🏛️ THE T AND C ESTATE")
-st.subheader("Harmony OS: Universal Application Suite")
+st.subheader(f"Harmony OS Suite - {st.session_state.user_role} Mode")
 
-app_tabs = st.tabs(["🚀 Null-G", "❄️ Stasis", "🧬 Bio-Harmony", "🛡️ The Halo", "🛠️ Diagnostics"])
+# Application Tabs
+app_tabs = st.tabs(["🚀 Null-G", "❄️ Stasis", "🧬 Bio-Harmony", "🛡️ Halo", "🛠️ Diagnostics"])
 
 with app_tabs[0]:
-    st.header("Null-G Propulsion Drive")
-    m_in = st.number_input("Vessel Mass (kg)", value=50000)
-    if st.button("ENGAGE MASS NEGATION"):
-        # The primary Carbone mass-negation calculation
-        st.metric("Effective Mass", f"{m_in * 1e-8:.8f} kg", delta="-99.999%")
+    st.header("Null-G Propulsion")
+    m_in = st.number_input("Mass (kg)", value=50000)
+    if st.button("ENGAGE"): st.metric("Effective Mass", f"{m_in * 1e-8:.8f} kg")
 
 with app_tabs[1]:
-    st.header("Pyro-Stasis Module")
-    t_in = st.slider("Initial Temperature (K)", 300, 5000, 1500)
-    if st.button("INITIATE THERMAL STASIS"):
-        st.success(f"Atomic vibration suspended at {t_in}K. Frequency Lock: 1420.405 MHz.")
+    st.header("Pyro-Stasis")
+    if st.button("ACTIVATE STASIS"): st.success("Thermal suspension active. 1420.405 MHz Locked.")
 
 with app_tabs[2]:
-    st.header("Bio-Harmony & Sentinel Cell")
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("SCAN BIO-RESONANCE"):
-            st.info("Sentinel Cell Status: 100% Harmonic Alignment.")
-    with col2:
-        if st.button("ACTIVATE BIO-RECOVERY"):
-            st.success("Cellular frequency correction active.")
+    st.header("Bio-Harmony / Sentinel")
+    if st.button("SCAN RESONANCE"): st.info("Harmonic Alignment: 100%")
 
 with app_tabs[3]:
-    st.header("The Halo (Safety Interface)")
-    st.write("Personal Perimeter Defense & Safety Monitoring")
-    if st.button("ENGAGE HALO SHIELD"):
-        st.warning("Halo Perimeter Active. T.L.C. Security Protocol Online.")
+    st.header("The Halo")
+    if st.button("INITIATE PERIMETER"): st.warning("Halo Shield Online.")
 
 with app_tabs[4]:
-    st.header("Universal Diagnostics")
+    st.header("Diagnostics")
     st.line_chart(1420.405 + 0.005 * np.sin(np.linspace(0, 10, 100)))
-    if st.button("RUN FULL SYSTEM COMPASS"):
-        with st.status("Verifying T and C Estate Assets..."):
-            time.sleep(1); st.write("✔️ Resonance Lock: 1420.405 MHz")
-            time.sleep(1); st.write("✔️ IP Registration: Verified via PPSR")
-        st.balloons()
 
-# --- 6. FLOATING TOGGLE & CHAT ---
+# --- 7. FLOATING TOGGLE & CHAT ---
 st.markdown('<div class="floating-anchor"></div>', unsafe_allow_html=True)
 if st.button("🛰️ HARMONY AI" if not st.session_state.ai_on else "❌ CLOSE AI"):
     st.session_state.ai_on = not st.session_state.ai_on

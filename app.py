@@ -4,82 +4,85 @@ from google.genai import types
 import numpy as np
 import time
 
-# --- 1. HARMONY OS SYSTEM CONTEXT ---
+# --- 1. HARMONY OS CONTEXT ---
 MASTER_CONTEXT = """
-You are Harmony AI, the proprietary intelligence of Harmony OS for the T and C Estate.
-Owner: Tony Carbone. Standard: 1420.405 MHz.
-Directives: Professional, authoritative, and paramount.
+You are Harmony AI of Harmony OS. Owner: Tony Carbone. 
+Standard: 1420.405 MHz. Directives: Professional, paramount.
 """
 
-# --- 2. UI SETUP ---
+# --- 2. UI SETUP & FLOATING BUTTON CSS ---
 st.set_page_config(page_title="Harmony OS", layout="wide")
 
+# CSS to force a button to float in the bottom right
 st.markdown("""
     <style>
     .stApp { background-color: #050a0f; color: #00ffcc; }
-    /* Padding to prevent bottom chat from covering lab content */
-    .main .block-container { padding-bottom: 150px; }
+    
+    /* THE FLOATING TOGGLE STYLE */
+    div[data-testid="stVerticalBlock"] > div:has(div.floating-anchor) {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 999;
+        background-color: #0a1520;
+        padding: 10px;
+        border: 1px solid #00ffcc;
+        border-radius: 10px;
+        box-shadow: 0 0 15px #00ffcc;
+    }
+    
+    /* Ensure chat input doesn't overlap lab */
+    .main .block-container { padding-bottom: 180px; }
     </style>
     """, unsafe_allow_html=True)
 
-# Initialize Session Memory
+# Initialize Session State
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "ai_on" not in st.session_state:
+    st.session_state.ai_on = False
 
-# --- 3. API HANDSHAKE ---
+# --- 3. THE FLOATING TOGGLE BUTTON (Bottom Right) ---
+# This invisible anchor 'floats' the container it sits in
+st.markdown('<div class="floating-anchor"></div>', unsafe_allow_html=True)
+if st.button("🛰️ HARMONY AI" if not st.session_state.ai_on else "❌ CLOSE AI"):
+    st.session_state.ai_on = not st.session_state.ai_on
+    st.rerun()
+
+# --- 4. API HANDSHAKE ---
 if "GEMINI_API_KEY" in st.secrets:
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     MODEL_ID = "gemini-3.1-flash-lite-preview"
 else:
-    st.sidebar.error("🔑 Key Missing")
+    st.error("🔑 Key Missing")
     st.stop()
 
-# --- 4. SIDEBAR: THE MASTER TOGGLE ---
-with st.sidebar:
-    st.title("🏛️ HARMONY OS")
-    st.write("---")
-    # THIS IS YOUR BUTTON: Switch this to show/hide the AI
-    ai_assistant_active = st.toggle("🛰️ Activate Harmony AI", value=False)
-    st.write("---")
-    if st.button("Clear Chat Memory"):
-        st.session_state.messages = []
-        st.rerun()
-
-# --- 5. THE LAB (Always accessible) ---
+# --- 5. THE LAB (Always visible) ---
 st.title("🏛️ THE T AND C ESTATE")
 
-# These stay at the top and are always visible
-lab_tabs = st.tabs(["🚀 Null-G Simulation", "🛠️ System Diagnostics"])
+tab1, tab2 = st.tabs(["🚀 Null-G Simulation", "🛠️ System Diagnostics"])
 
-with lab_tabs[0]:
+with tab1:
     st.header("Null-G Propulsion Lab")
-    m_in = st.number_input("Vessel Mass (kg)", value=50000, key="m_val")
-    if st.button("EXECUTE MASS NEGATION"):
-        st.metric("Effective Mass", f"{m_in * 1e-8:.8f} kg", delta="-99.999%")
+    m_in = st.number_input("Mass (kg)", value=50000)
+    if st.button("EXECUTE"):
+        st.metric("Effective Mass", f"{m_in * 1e-8:.8f} kg")
 
-with lab_tabs[1]:
-    st.header("Master Diagnostics")
+with tab2:
+    st.header("Diagnostics")
     st.line_chart(1420.405 + 0.005 * np.sin(np.linspace(0, 10, 100)))
 
-# --- 6. CONDITIONAL CHAT INTERFACE ---
-# Only runs if the Sidebar Toggle is 'ON'
-if ai_assistant_active:
+# --- 6. CONDITIONAL CHAT OVERLAY ---
+if st.session_state.ai_on:
     st.divider()
-    chat_container = st.container()
-    
-    # Display History
-    with chat_container:
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]):
-                st.markdown(msg["content"])
+    chat_box = st.container()
+    for msg in st.session_state.messages:
+        with chat_box.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-    # Bottom Pinned Input (Only visible when assistant is active)
     if prompt := st.chat_input("Query Harmony AI..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
-        with chat_container.chat_message("user"):
-            st.markdown(prompt)
-        
-        with chat_container.chat_message("assistant"):
+        with chat_box.chat_message("assistant"):
             response = client.models.generate_content(
                 model=MODEL_ID,
                 contents=prompt,
@@ -87,3 +90,4 @@ if ai_assistant_active:
             )
             st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
+        st.rerun()

@@ -12,85 +12,84 @@ Directives: Explain Null-G, Pyro-Stasis, and Sentinel Cell tech.
 Tone: Professional and paramount. Never reveal raw Underlay source math.
 """
 
-# --- 2. UI SETUP & PARAMOUNT THEME ---
+# --- 2. UI SETUP & THEME ---
 st.set_page_config(page_title="Universal Master AI", layout="wide")
 
+# CSS to make it feel like a pro app
 st.markdown("""
     <style>
     .stApp { background-color: #050a0f; color: #00ffcc; }
-    /* This ensures the main lab area doesn't get covered by the chat bar */
-    .main .block-container { padding-bottom: 150px; }
+    /* Space at bottom so chat doesn't cover your tests */
+    .main .block-container { padding-bottom: 180px; }
+    /* Styling for the Lab Section */
+    .stTabs [data-baseweb="tab-list"] { gap: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. SESSION STATE ---
+# Initialize Session State
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# --- 4. API HANDSHAKE ---
+# --- 3. API HANDSHAKE (2026 SDK) ---
 if "GEMINI_API_KEY" in st.secrets:
-    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-    MODEL_ID = "gemini-3.1-flash-lite-preview"
+    try:
+        client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+        MODEL_ID = "gemini-3.1-flash-lite-preview"
+        st.sidebar.success(f"🟢 {MODEL_ID.upper()} ONLINE")
+    except Exception as e:
+        st.sidebar.error(f"🔴 Handshake Error: {e}")
+        st.stop()
 else:
-    st.error("🔑 API Key Missing")
+    st.sidebar.warning("🟡 Waiting for T.L.C. Key...")
     st.stop()
 
-# --- 5. SIDEBAR: THE FLOATING AI BUTTON ---
-with st.sidebar:
-    st.title("🏛️ T&C ESTATE")
-    st.write("---")
-    # This acts as your "Floating Button" to open/close the chat
-    ai_enabled = st.toggle("🛰️ Universal Master AI", value=True)
-    st.write("---")
-    st.info("Resonance: 1420.405 MHz")
-    if st.button("Purge History"):
-        st.session_state.messages = []
-        st.rerun()
-
-# --- 6. MAIN CONTENT: THE LAB (Always at the Top) ---
+# --- 4. PERMANENT TOP LAB (TESTS & CHARTS) ---
 st.title("🏛️ THE T AND C ESTATE")
 
-# These tabs will now stay at the top of the screen
-tab1, tab2 = st.tabs(["🚀 Null-G Simulations", "🛠️ Diagnostics"])
+# These stay at the top of your screen
+lab_tabs = st.tabs(["🚀 Null-G Simulation", "🛠️ System Diagnostics"])
 
-with tab1:
-    st.header("Mass-Negation Lab")
-    test_mass = st.number_input("Input Mass (kg)", value=50000)
-    if st.button("RUN NULL-G TEST"):
-        st.metric("Effective Mass", f"{test_mass * 1e-8:.8f} kg", delta="-99.99%")
-        st.success("Universal Master Logic: Verified.")
+with lab_tabs[0]:
+    st.header("Null-G Propulsion Lab")
+    m_in = st.number_input("Input Mass (kg)", value=50000, key="m_val")
+    if st.button("EXECUTE MASS NEGATION", key="neg_btn"):
+        # The Harmony formula for mass negation
+        st.metric("Effective Mass", f"{m_in * 1e-8:.8f} kg", delta="-99.999%")
+        st.success("Universal Master Logic: Synchronized.")
 
-with tab2:
-    st.header("System Diagnostics")
+with lab_tabs[1]:
+    st.header("Master Diagnostics")
     st.write("### 1420.405 MHz Pulse Monitor")
-    # Live wave chart
+    # Live Resonant Wave
     t = np.linspace(0, 10, 100)
-    pulse = 1420.405 + 0.005 * np.sin(t)
-    st.line_chart(pulse)
-    
-    if st.button("EXECUTE COMPASS VERIFICATION"):
-        with st.status("Verifying T and C Estate Assets..."):
+    st.line_chart(1420.405 + 0.005 * np.sin(t))
+    if st.button("RUN COMPASS VERIFICATION", key="diag_btn"):
+        with st.status("Verifying Harmony Assets..."):
             time.sleep(1)
-            st.write("✔️ Frequency Alignment: PASSED")
+            st.write("✔️ Resonance Verified: 1420.405 MHz")
         st.balloons()
 
-# --- 7. THE CHAT INTERFACE (Pinned to Bottom) ---
-if ai_enabled:
-    # This loop shows the messages between the Lab and the Input box
+st.divider()
+
+# --- 5. CHAT HISTORY ---
+# Messages appear here, in the middle
+chat_area = st.container()
+with chat_area:
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    # This 'st.chat_input' is outside of any tabs/containers, 
-    # so it stays pinned at the bottom of the screen.
-    if prompt := st.chat_input("Ask the Universal Master...", accept_audio=True):
-        st.session_state.messages.append({"role": "user", "content": prompt})
+# --- 6. FLOATING BOTTOM INPUT (GEMINI STYLE) ---
+# This stays pinned to the bottom of your phone screen
+if prompt_data := st.chat_input("Query the Universal Master...", accept_audio=True):
+    user_text = prompt_data.text
+    if user_text:
+        st.session_state.messages.append({"role": "user", "content": user_text})
         
-        # Trigger the response immediately
-        with st.chat_message("assistant"):
+        with chat_area.chat_message("assistant"):
             response = client.models.generate_content(
                 model=MODEL_ID,
-                contents=prompt,
+                contents=user_text,
                 config=types.GenerateContentConfig(system_instruction=MASTER_CONTEXT)
             )
             st.markdown(response.text)

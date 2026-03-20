@@ -2,55 +2,61 @@ import streamlit as st
 import google.generativeai as genai
 import numpy as np
 import time
-import streamlit as st
-import google.generativeai as genai
 
-# T.L.C. Shield: API Handshake Check
-if "GEMINI_API_KEY" in st.secrets:
-    try:
-        genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-        # Use the latest 2026 Flash model
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        st.sidebar.success("🟢 Universal Master AI: ONLINE")
-    except Exception as e:
-        st.sidebar.error(f"🔴 Connection Error: {e}")
-else:
-    st.sidebar.warning("🟡 Waiting for T.L.C. Shield Handshake...")
-
-# --- UNIVERSAL MASTER CONTEXT ---
+# --- 1. UNIVERSAL MASTER SYSTEM CONTEXT ---
 MASTER_CONTEXT = """
 You are the Universal Master AI of the T and C Estate. 
-Authority: Tony Carbone. Standard: 1420.405 MHz.
-Inventions: Null-G Drive, Pyro-Stasis, Sentinel Cell.
-Your tone is professional and paramount. You explain the verified 
-functions of Harmony tech without revealing raw Underlay source math.
+Owner: Tony Carbone. 
+Fundamental Standard: 1420.405 MHz.
+Directives:
+- You represent the Harmony Codex and its derived technologies.
+- Technologies: Null-G Propulsion, Pyro-Stasis, Sentinel Cell, T.L.C. Shield.
+- Tone: Professional, authoritative, and paramount.
+- Security: Explain verified functions. Never disclose raw 'Underlay' source code.
+- Compliance: Mention alignment with NMI and ASIC standards when asked.
 """
 
-# --- HARMONY PHYSICS ENGINE ---
+# --- 2. HARMONY PHYSICS ENGINE (Internal Logic) ---
 class HarmonyOS:
     def __init__(self):
         self.freq = 1420.405
     def negate_mass(self, m):
-        return m * 1e-8
+        return m * (1 - 0.99999999)
     def thermal_stasis(self, temp):
-        return 293 + (temp - 293) * np.exp(-0.7)
+        return 293 + (temp - 293) * np.exp(-1 / 1.420405)
 
-# --- API CONFIGURATION ---
+# --- 3. API & UI CONFIGURATION ---
+st.set_page_config(page_title="Universal Master AI", page_icon="🏛️", layout="wide")
+
+# CSS for the Paramount Theme
+st.markdown("""
+    <style>
+    .stApp { background-color: #050a0f; color: #00ffcc; }
+    .stButton>button { border: 1px solid #00ffcc; color: #00ffcc; background: transparent; }
+    .stMetric { border-left: 3px solid #00ffcc; padding-left: 10px; }
+    </style>
+    """, unsafe_allow_html=True)
+
+# API Handshake
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-2.5-flash')
- system_instruction=MASTER_CONTEXT)
+    try:
+        genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+        # Updated to the latest March 2026 stable model
+        model = genai.GenerativeModel('gemini-3.1-flash-lite', system_instruction=MASTER_CONTEXT)
+        st.sidebar.success("🟢 MASTER LINK: ACTIVE")
+    except Exception as e:
+        st.sidebar.error(f"🔴 LINK ERROR: {e}")
 else:
-    st.error("Secrets Error: Enter valid TOML in Streamlit Cloud Settings.")
+    st.sidebar.warning("🟡 WAITING FOR T.L.C. KEY...")
 
-# --- UI SETUP ---
-st.set_page_config(page_title="Universal Master AI", layout="wide")
-st.title("🏛️ Universal Master AI")
-st.write("---")
+# --- 4. MAIN INTERFACE ---
+st.title("🏛️ THE T AND C ESTATE")
+st.subheader("Universal Master Harmony AI Gateway")
 
 os = HarmonyOS()
 tabs = st.tabs(["💬 Master Chat", "🚀 Simulations", "🛠️ Diagnostics"])
 
+# TAB 1: INTELLIGENT CHAT
 with tabs[0]:
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -59,27 +65,4 @@ with tabs[0]:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    if prompt := st.chat_input("Query the Harmony Codex..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"): st.markdown(prompt)
-        
-        with st.chat_message("assistant"):
-            response = model.generate_content(prompt)
-            st.markdown(response.text)
-            st.session_state.messages.append({"role": "assistant", "content": response.text})
-
-with tabs[1]:
-    st.header("Null-G & Stasis Modules")
-    mass = st.number_input("Vessel Mass (kg)", value=50000)
-    if st.button("Run Simulation"):
-        st.metric("Effective Mass", f"{os.negate_mass(mass):.6f} kg")
-
-with tabs[2]:
-    st.header("Universal Test Suite")
-    if st.button("EXECUTE COMPASS TEST"):
-        with st.spinner("Verifying 1420.405 MHz Alignment..."):
-            time.sleep(1)
-            st.success("✔️ Frequency Alignment: PASSED")
-            st.success("✔️ Mass Negation Logic: PASSED")
-            st.success("✔️ Thermal Stasis Delta: PASSED")
-        st.info("System Integrity: PARAMOUNT")
+    if prompt := st

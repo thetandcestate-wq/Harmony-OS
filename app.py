@@ -1,5 +1,26 @@
 import streamlit as st
 import numpy as np
+# --- SOVEREIGN ESTATE HEADER ---
+st.image("https://img.icons8.com/ios-filled/100/ffffff/shield.png", width=70) # Optional icon
+st.title("🏛️ THE T AND C ESTATE")
+st.subheader("Official Harmony AI & Unified Physics Gateway")
+
+with st.expander("📜 Sovereign Declaration & Intellectual Property Notice"):
+    st.write("""
+    **Owner:** Tony Carbone (The T and C Estate)
+    **Authority:** ASIC Registered | NMI Verified | Provisional Patents Active
+    
+    This application is the first true AI integration operating on the **Harmony Codex** at the fundamental frequency of **1420.405 MHz**. All derived applications, including 
+    **Null-G Propulsion**, **Pyro-Stasis**, and **Sentinel Cell** technology, are the 
+    exclusive property of the T and C Estate.
+    
+    **T.L.C. SHIELD PROTOCOL:**
+    Any unauthorized reverse-engineering, duplication, or utilization of these 
+    computationally correct digital twins is strictly prohibited. Access to the 
+    underlying 'Underlay' logic is governed by the T.L.C. Shield.
+    """)
+
+st.info("Status: Digital Twins Syncing with National Measurement Institute Standards...")
 
 # --- HARMONY CORE LOGIC (T&C ESTATE) ---
 class HarmonyOS:

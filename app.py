@@ -1,26 +1,5 @@
 import streamlit as st
 import numpy as np
-# --- SOVEREIGN ESTATE HEADER ---
-st.image("https://img.icons8.com/ios-filled/100/ffffff/shield.png", width=70) # Optional icon
-st.title("🏛️ THE T AND C ESTATE")
-st.subheader("Official Harmony AI & Unified Physics Gateway")
-
-with st.expander("📜 Sovereign Declaration & Intellectual Property Notice"):
-    st.write("""
-    **Owner:** Tony Carbone (The T and C Estate)
-    **Authority:** ASIC Registered | NMI Verified | Provisional Patents Active
-    
-    This application is the first true AI integration operating on the **Harmony Codex** at the fundamental frequency of **1420.405 MHz**. All derived applications, including 
-    **Null-G Propulsion**, **Pyro-Stasis**, and **Sentinel Cell** technology, are the 
-    exclusive property of the T and C Estate.
-    
-    **T.L.C. SHIELD PROTOCOL:**
-    Any unauthorized reverse-engineering, duplication, or utilization of these 
-    computationally correct digital twins is strictly prohibited. Access to the 
-    underlying 'Underlay' logic is governed by the T.L.C. Shield.
-    """)
-
-st.info("Status: Digital Twins Syncing with National Measurement Institute Standards...")
 
 # --- HARMONY CORE LOGIC (T&C ESTATE) ---
 class HarmonyOS:
@@ -34,17 +13,33 @@ class HarmonyOS:
     def thermal_stasis(self, temp):
         return 293 + (temp - 293) * np.exp(-1 / 1.420405)
 
-# --- USER INTERFACE ---
-st.set_page_config(page_title="T&C Estate Harmony", page_icon="🌐")
-st.title("🌐 Harmony AI: Sovereign OS")
-st.markdown("### Verified Unified Physics Dashboard")
+# --- USER INTERFACE SETUP ---
+st.set_page_config(page_title="T&C Estate Universal", page_icon="🏛️")
 
+# --- MASTER ESTATE HEADER ---
+st.title("🏛️ THE T AND C ESTATE")
+st.subheader("Universal Master Harmony AI Gateway")
+
+with st.expander("📜 Paramount Estate & Intellectual Property Notice"):
+    st.write("""
+    **Owner:** Tony Carbone (The T and C Estate)
+    **Authority:** ASIC Registered | NMI Verified | Provisional Patents Active
+    
+    This application is the primary Universal Master integration operating on the 
+    **Harmony Codex** at the fundamental frequency of **1420.405 MHz**. 
+    All derived applications—**Null-G**, **Pyro-Stasis**, and **Sentinel Cell**—are 
+    the exclusive Paramount property of the T and C Estate.
+    
+    **T.L.C. SHIELD PROTOCOL:**
+    Unauthorized access to the 'Underlay' or the reverse-engineering of these 
+    computationally correct twins is strictly prohibited. Access is governed 
+    exclusively by the T.L.C. Shield handshake.
+    """)
+
+st.info("System Status: Universal Master Logic Synchronized with NMI Standards.")
+
+# --- MODULE TABS ---
 os = HarmonyOS()
-
-# Sidebar for TLC Shield Status
-st.sidebar.success("T.L.C. Shield: ACTIVE")
-st.sidebar.info(f"Frequency: {os.freq} MHz")
-
 tab1, tab2, tab3 = st.tabs(["Null-G Drive", "Pyro-Stasis", "Sentinel Cell"])
 
 with tab1:
@@ -53,7 +48,7 @@ with tab1:
     if st.button("Calculate Mass Negation"):
         eff_mass = os.negate_mass(mass)
         st.metric("Effective Mass", f"{eff_mass:.6f} kg")
-        st.write("Status: Computational Correctness Verified.")
+        st.write("Status: Universal Master Correctness Verified.")
 
 with tab2:
     st.header("Pyro-Stasis Field")
@@ -65,6 +60,6 @@ with tab2:
 
 with tab3:
     st.header("Sentinel Cell")
-    st.write("10,000-Year Energy Lifecycle: STABLE")
+    st.write("10,000-Year Energy Lifecycle: PARAMOUNT STABILITY")
     st.progress(100)
-    st.caption("Resonant Frequency alignment confirmed with NMI standards.")
+    st.caption("Resonant Frequency alignment confirmed via Harmony Codex.")

@@ -22,84 +22,103 @@ SECURITY PROTOCOL 'RESOLUTE':
    - Full access to Estate Archives and Master Vault.
 """
 
-# --- 2. UI SETUP & ADVANCED CSS ---
+# --- 2. UI SETUP & MATRIX FUTURISTIC CSS ---
 st.set_page_config(page_title="Harmony OS", layout="wide", page_icon="🏛️")
 
 st.markdown("""
     <style>
-    /* Global Aesthetic */
+    /* Global Matrix Aesthetic */
     .stApp { 
         background-color: #01050a; color: #00ffcc; font-family: 'Courier New', Courier, monospace;
-        background-image: radial-gradient(circle, #00ffcc 0.5px, transparent 0.5px);
-        background-size: 40px 40px;
+        background-image: linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
     }
     
+    /* Matrix Rain Animation */
+    @keyframes matrix-rain {
+        0% { background-position: 0% -100%; }
+        100% { background-position: 0% 100%; }
+    }
+    .matrix-bg {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(180deg, transparent, rgba(0, 255, 204, 0.1), transparent);
+        background-size: 100% 200%; animation: matrix-rain 5s linear infinite;
+        pointer-events: none; z-index: 0;
+    }
+
     /* Federal Warning */
     .federal-warning {
         background-color: rgba(255, 0, 0, 0.2); border: 2px solid #ff0000;
         padding: 20px; border-radius: 10px; color: #ff4b4b; text-align: center;
         text-transform: uppercase; font-weight: bold; margin-bottom: 25px;
-        box-shadow: 0 0 20px #ff0000;
+        box-shadow: 0 0 20px #ff0000; position: relative; z-index: 10;
     }
 
     /* Interactive Cards */
     .test-card {
         border: 1px solid #00ffcc; padding: 20px; border-radius: 12px;
-        background: rgba(0, 255, 204, 0.05); transition: 0.4s ease;
-        margin-bottom: 15px;
+        background: rgba(0, 0, 0, 0.8); transition: 0.4s ease;
+        margin-bottom: 15px; position: relative; z-index: 10;
     }
-    .test-card:hover { background: rgba(0, 255, 204, 0.15); box-shadow: 0 0 25px #00ffcc; }
+    .test-card:hover { box-shadow: 0 0 25px #00ffcc; transform: translateY(-2px); }
 
-    /* Floating AI Toggle Fixed to Bottom Right */
-    .floating-ai-btn {
-        position: fixed; bottom: 30px; right: 30px; z-index: 999999;
-    }
+    /* Floating AI Button */
+    .floating-ai-btn { position: fixed; bottom: 30px; right: 30px; z-index: 999999; }
 
-    /* Warp Effect */
-    @keyframes warp-pulse {
-        0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-        100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+    /* Warp/Quantum Transitions */
+    @keyframes portal-spin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    .warp-effect {
-        position: fixed; top: 50%; left: 50%; width: 400px; height: 400px;
-        border: 1px solid #00ffcc; border-radius: 50%;
-        animation: warp-pulse 1.2s ease-out infinite; pointer-events: none; z-index: 10000;
+    .portal-effect {
+        position: fixed; top: 50%; left: 50%; width: 500px; height: 500px;
+        border: 2px dashed #00ffcc; border-radius: 50%;
+        animation: portal-spin 2s linear infinite; pointer-events: none; z-index: 10000;
     }
     </style>
+    <div class="matrix-bg"></div>
     """, unsafe_allow_html=True)
 
-# --- 3. VOCAL MATRIX (RE-ENGINEERED) ---
+# --- 3. VOCAL MATRIX (STABILIZED) ---
 def trigger_vocal_output(text):
-    """Injects a non-blocking JS speech synthesis command."""
     if st.session_state.get('vocal_active', True):
         clean_text = text.replace("'", "\\'").replace("\n", " ")
         components.html(f"""
             <script>
-            var msg = new SpeechSynthesisUtterance('{clean_text}');
-            msg.rate = 0.9; msg.pitch = 0.8;
             window.parent.speechSynthesis.cancel();
+            var msg = new SpeechSynthesisUtterance('{clean_text}');
+            msg.rate = 0.95; msg.pitch = 0.85;
             window.parent.speechSynthesis.speak(msg);
             </script>
         """, height=0)
 
-# --- 4. QUANTUM ANIMATION & CORRECTION ENGINE ---
-def run_quantum_transition(label="PHASE SHIFT"):
+# --- 4. RANDOMIZED FUTURISTIC TRANSITIONS ---
+def run_random_animation(label="RESONANCE SYNC"):
     placeholder = st.empty()
+    anim_choice = random.choice(["MATRIX", "WARP", "QUANTUM"])
     with placeholder.container():
-        st.markdown('<div class="warp-effect"></div>', unsafe_allow_html=True)
-        st.write(f"### ⚛️ {label}")
-        logs = ["Collapsing Tensors...", "Syncing 1420.405 MHz...", "Verifying Estate IP..."]
+        if anim_choice == "WARP":
+            st.markdown('<div class="portal-effect"></div>', unsafe_allow_html=True)
+        st.write(f"### 🏛️ {label}")
+        logs = [
+            f"Accessing Harmony Codex...", 
+            f"Frequency Lock: 1420.405 MHz",
+            f"G.U.T. Tensor Alignment: {random.randint(90,100)}%",
+            f"Establishing Secure Underlay..."
+        ]
         for log in logs:
             st.code(f">>> {log}")
-            time.sleep(0.8)
+            time.sleep(0.7)
     placeholder.empty()
 
+# --- 5. HARMONIC CORRECTION ENGINE (25s) ---
 def harmonic_correction(tech_name, tech_type):
-    run_quantum_transition(f"INITIATING {tech_name.upper()}")
+    run_random_animation(f"CORRECTING {tech_name.upper()}")
     plot_placeholder = st.empty()
     status_placeholder = st.empty()
     
-    duration = 100 # 25 seconds
+    duration = 100 
     history = []
     
     for i in range(duration):
@@ -115,26 +134,25 @@ def harmonic_correction(tech_name, tech_type):
         final_y = (base * ratio) + noise
         history.append(np.mean(np.abs(final_y)))
         
-        df = pd.DataFrame({'Harmony Resonance': final_y, 'Null Point': np.zeros(150)})
+        df = pd.DataFrame({'Active Resonance': final_y, 'Null Point': np.zeros(150)})
         plot_placeholder.line_chart(df, height=300)
         status_placeholder.write(f"**{tech_name}:** {int(ratio*100)}% Harmonic Alignment")
         time.sleep(0.25)
     
-    # Auto-Archive
     log = {"TS": datetime.datetime.now().strftime("%H:%M"), "Tech": tech_name, "Res": np.mean(history)}
     if "archive" not in st.session_state: st.session_state.archive = []
     st.session_state.archive.append(log)
-    status_placeholder.success(f"**LOGGED:** {tech_name} stabilized at 1420.405 MHz.")
+    status_placeholder.success(f"**STABILIZED:** {tech_name} locked at 1420.405 MHz.")
 
-# --- 5. INITIALIZE SESSION STATE ---
+# --- 6. SESSION STATE ---
 for key in ['auth', 'role', 'guest_locked', 'vocal_active', 'ai_on', 'messages', 'archive', 'show_tests']:
     if key not in st.session_state:
-        if key == 'auth' or key == 'ai_on' or key == 'guest_locked' or key == 'show_tests': st.session_state[key] = False
+        if key in ['auth', 'ai_on', 'guest_locked', 'show_tests']: st.session_state[key] = False
         elif key == 'vocal_active': st.session_state[key] = True
-        elif key == 'messages' or key == 'archive': st.session_state[key] = []
+        elif key in ['messages', 'archive']: st.session_state[key] = []
         else: st.session_state[key] = None
 
-# --- 6. LOGIN PORTAL ---
+# --- 7. LOGIN ---
 if not st.session_state.auth:
     st.markdown('<div class="federal-warning">⚠️ FEDERAL SECURITY WARNING: RESTRICTED SYSTEM ⚠️</div>', unsafe_allow_html=True)
     st.title("🏛️ HARMONY OS: SECURE PORTAL")
@@ -144,58 +162,54 @@ if not st.session_state.auth:
             k = st.text_input("Master Key", type="password")
             if st.form_submit_button("AUTHENTICATE"):
                 if k == "makave7181!!TCH":
+                    run_random_animation("ADMIN VERIFIED")
                     st.session_state.auth, st.session_state.role = True, "ADMIN"
                     st.rerun()
-                else: st.error("Breach Detected.")
+                else: st.error("Access Denied.")
     with c2:
         if not st.session_state.guest_locked:
             if st.button("ENTER AS GUEST"):
+                run_random_animation("GUEST ACCESS")
                 st.session_state.auth, st.session_state.role = True, "GUEST"
                 st.rerun()
-        else: st.warning("GUEST ACCESS SEVERED.")
     st.stop()
 
-# --- 7. SIDEBAR (VAULT & TERMINATE) ---
+# --- 8. SIDEBAR ---
 with st.sidebar:
     st.title("🏛️ ESTATE TOOLS")
-    st.write(f"Identity: **{st.session_state.role}**")
+    st.write(f"User: **{st.session_state.role}**")
     st.write("---")
     st.session_state.vocal_active = st.toggle("🔊 Vocal Matrix", value=st.session_state.vocal_active)
     
     if st.session_state.role == "ADMIN":
-        st.subheader("📜 Estate Archive")
+        st.subheader("📜 Master Vault")
         if st.session_state.archive:
             st.dataframe(pd.DataFrame(st.session_state.archive))
-            st.download_button("💾 DOWNLOAD VAULT", pd.DataFrame(st.session_state.archive).to_csv(index=False), "vault.csv")
-        if st.button("🛑 RUN VULNERABILITY SCAN"): st.success("Scan Complete: 0 Scrapers Detected.")
+            st.download_button("💾 DOWNLOAD ARCHIVE", pd.DataFrame(st.session_state.archive).to_csv(index=False), "vault.csv")
         if st.button("🛑 EMERGENCY LOCKOUT"): st.session_state.guest_locked = True
 
     if st.button("🔚 TERMINATE SESSION"):
         st.session_state.auth = False
         st.rerun()
 
-# --- 8. MAIN TEST AREA ---
+# --- 9. APPLICATION LAB ---
 st.title("🏛️ THE T AND C ESTATE")
 if st.button("🧪 ACCESS HARMONY APPLICATIONS"):
     st.session_state.show_tests = not st.session_state.show_tests
 
 if st.session_state.show_tests:
-    t1, t2, t3, t4 = st.tabs(["🚀 Physics", "🧬 Bio-Harmony", "🛡️ Defense", "🌊 Marine"])
+    t1, t2, t3 = st.tabs(["🚀 Physics", "🧬 Bio-Harmony", "🛡️ Defense"])
     with t1:
         st.markdown('<div class="test-card">', unsafe_allow_html=True)
         m = st.slider("Null-G Mass (kg)", 1, 10000000, 50000)
-        if st.button("ENGAGE"): harmonic_correction("Null-G", "NULL-G")
+        if st.button("ENGAGE NULL-G"): harmonic_correction("Null-G", "NULL-G")
         st.markdown('</div>', unsafe_allow_html=True)
     with t2:
         st.markdown('<div class="test-card">', unsafe_allow_html=True)
-        if st.button("START SENTINEL SCAN"): harmonic_correction("Bio-Harmony", "SENTINEL")
-        st.markdown('</div>', unsafe_allow_html=True)
-    with t3:
-        st.markdown('<div class="test-card">', unsafe_allow_html=True)
-        if st.button("MODULATE HALO"): harmonic_correction("The Halo", "HALO")
+        if st.button("SENTINEL SCAN"): harmonic_correction("Bio-Harmony", "SENTINEL")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 9. FLOATING AI BUTTON ---
+# --- 10. FLOATING AI ---
 st.markdown(f'<div class="floating-ai-btn">', unsafe_allow_html=True)
 if st.button("🛰️ HARMONY AI" if not st.session_state.ai_on else "❌ CLOSE"):
     st.session_state.ai_on = not st.session_state.ai_on
@@ -213,8 +227,7 @@ if st.session_state.ai_on:
         
         if p := st.chat_input("Query Harmony AI..."):
             st.session_state.messages.append({"role": "user", "content": p})
-            # GUEST SECURITY TERMINATION
-            if st.session_state.role == "GUEST" and any(x in p.lower() for x in ["formula", "source code", "equation"]):
+            if st.session_state.role == "GUEST" and any(x in p.lower() for x in ["formula", "source code"]):
                 st.session_state.guest_locked, st.session_state.auth = True, False
                 st.rerun()
             

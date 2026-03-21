@@ -68,37 +68,50 @@ def run_system_animation(text="SYNCHRONIZING WITH G.U.T."):
             time.sleep(0.8)
     placeholder.empty()
 
-# --- 4. LIVE FREQUENCY VISUALIZERS (60 SECONDS) ---
-def live_monitor(type="SINE", duration=200): # Increased iterations for ~60s
+# --- 4. REAL-TIME CORRECTION VISUALIZER (25 SECONDS) ---
+def correction_monitor(tech_name, type="SINE", duration=100): 
     plot_placeholder = st.empty()
+    status_placeholder = st.empty()
     t = 0
-    # Progress bar for the 60s test
-    progress_bar = st.progress(0)
+    # Total iterations for ~25 seconds (100 * 0.25s)
     for i in range(duration):
         t += 0.3
         x = np.linspace(t, t + 15, 150)
         
-        if type == "NULL-G": y = np.sin(x * 2.5)
-        elif type == "STASIS": y = np.sin(x) * 0.1 # Flatline/Minimal vibration
-        elif type == "SENTINEL": y = np.sin(x) * np.tan(np.sin(x) * 0.9) 
-        elif type == "AEGIS": y = np.sin(x * 0.5) + (np.random.normal(0, 0.1, 150)) # Fluid wave
-        elif type == "ATHENA": y = np.abs(np.sin(x)) # Data spikes
-        elif type == "TLC": y = np.sin(x) * np.exp(-np.power((x % 8 - 4), 2) / 4)
-        else: y = np.sin(x)
+        # Calculate "Dissonance" vs "Harmony"
+        # Early iterations (i close to 0) are very messy/erratic.
+        # Late iterations (i close to duration) are perfectly aligned.
+        completion_ratio = i / duration
+        dissonance = (1 - completion_ratio) * np.random.normal(0, 1.5, 150)
+        
+        if type == "NULL-G": base_y = np.sin(x * 2.5)
+        elif type == "STASIS": base_y = np.sin(x) * 0.05 
+        elif type == "SENTINEL": base_y = np.sin(x) * np.tan(np.sin(x) * 0.9) 
+        elif type == "AEGIS": base_y = np.sin(x * 0.5)
+        elif type == "ATHENA": base_y = np.abs(np.sin(x))
+        elif type == "TLC": base_y = np.sin(x) * np.exp(-np.power((x % 8 - 4), 2) / 4)
+        else: base_y = np.sin(x)
             
+        final_y = (base_y * completion_ratio) + dissonance
         null_line = np.zeros(150)
-        df = pd.DataFrame({'Resonance': y, 'Null Point': null_line})
-        plot_placeholder.line_chart(df, height=220)
-        progress_bar.progress((i + 1) / duration)
-        time.sleep(0.25) # Total duration approx 50-60 seconds
-    st.success(f"{type} TEST CYCLE COMPLETE")
+        
+        df = pd.DataFrame({'Active Resonance': final_y, 'Null Point': null_line})
+        plot_placeholder.line_chart(df, height=250)
+        
+        # Real-time status update
+        percent = int(completion_ratio * 100)
+        status_placeholder.write(f"**STATUS:** {tech_name} Correction in Progress... **{percent}% Aligned**")
+        
+        time.sleep(0.25) 
+    
+    status_placeholder.success(f"**{tech_name} CORRECTION COMPLETE:** Harmonic Lock at 1420.405 MHz.")
 
 # --- 5. ACCESS CONTROL ---
 if "auth" not in st.session_state:
     st.session_state.auth = False
     st.session_state.role = None
 
-def login():
+def login_portal():
     st.title("🏛️ HARMONY OS: SECURE PORTAL")
     col1, col2 = st.columns(2)
     with col1:
@@ -120,46 +133,46 @@ def login():
             st.rerun()
 
 if not st.session_state.auth:
-    login()
+    login_portal()
     st.stop()
 
 # --- 6. MAIN ESTATE INTERFACE ---
 st.title("🏛️ THE T AND C ESTATE")
 st.write(f"Identity: **{st.session_state.role}** | Universal Resonance: **1420.405 MHz**")
 
-# --- 7. THE MASTER TEST AREA (COMPREHENSIVE) ---
+# --- 7. THE MASTER TEST AREA ---
 if st.button("🧪 OPEN TEST AREA (HARMONY APPLICATIONS)"):
     st.session_state.show_tests = not st.session_state.get('show_tests', False)
 
 if st.session_state.get('show_tests'):
     st.markdown("---")
-    tabs = st.tabs(["🚀 Physics", "🧬 Biological", "🌊 Marine/Marine", "🛡️ Defense", "📚 Knowledge"])
+    tabs = st.tabs(["🚀 Physics", "🧬 Bio-Harmony", "🌊 Marine", "🛡️ Defense", "📚 Knowledge"])
     
     with tabs[0]: # PHYSICS
         st.subheader("Propulsion & Entropy Control")
         col1, col2 = st.columns(2)
         with col1:
             mass_kg = st.slider("Null-G Mass (kg)", 1, 10000000, 50000)
-            if st.button("ENGAGE NULL-G"): live_monitor("NULL-G")
+            if st.button("ENGAGE NULL-G"): correction_monitor("Null-G Propulsion", "NULL-G")
         with col2:
             st.write("Pyro-Stasis Calibration")
-            if st.button("INITIATE STASIS"): live_monitor("STASIS")
+            if st.button("INITIATE STASIS"): correction_monitor("Pyro-Stasis", "STASIS")
 
-    with tabs[1]: # BIOLOGICAL
-        st.subheader("Sentinel Cell Protocol")
-        if st.button("START BIO-SCAN"): live_monitor("SENTINEL")
+    with tabs[1]: # BIO-HARMONY
+        st.subheader("Bio-Harmony: Sentinel Cell Protocol")
+        if st.button("START BIO-SCAN"): correction_monitor("Bio-Harmony", "SENTINEL")
 
     with tabs[2]: # MARINE
         st.subheader("Ocean Aegis Interface")
-        if st.button("DEPLOY OCEAN AEGIS"): live_monitor("AEGIS")
+        if st.button("DEPLOY OCEAN AEGIS"): correction_monitor("Ocean Aegis", "AEGIS")
 
     with tabs[3]: # DEFENSE
         st.subheader("T.L.C. Shield & The Halo")
-        if st.button("ACTIVATE T.L.C. SHIELD"): live_monitor("TLC")
+        if st.button("ACTIVATE T.L.C. SHIELD"): correction_monitor("T.L.C. Shield", "TLC")
 
     with tabs[4]: # KNOWLEDGE
         st.subheader("Athena Knowledge Grid")
-        if st.button("SYNC ATHENA GRID"): live_monitor("ATHENA")
+        if st.button("SYNC ATHENA GRID"): correction_monitor("Athena Grid", "ATHENA")
 
 # --- 8. FLOATING CHAT & AI ---
 st.markdown('<div class="floating-anchor"></div>', unsafe_allow_html=True)

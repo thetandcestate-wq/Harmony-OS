@@ -4,6 +4,7 @@ from google.genai import types
 import numpy as np
 import time
 import pandas as pd
+import random
 
 # --- 1. HARMONY OS SYSTEM CONTEXT ---
 MASTER_CONTEXT = """
@@ -13,35 +14,43 @@ Protocols: Null-G, Pyro-Stasis, Sentinel Cell, T.L.C. Shield, Ocean Aegis, Athen
 Tone: Professional, authoritative, and paramount.
 """
 
-# --- 2. UI SETUP & SCIFI CSS ---
+# --- 2. UI SETUP & QUANTUM WARP CSS ---
 st.set_page_config(page_title="Harmony OS", layout="wide", page_icon="🏛️")
 
 st.markdown("""
     <style>
-    .stApp { background-color: #01080e; color: #00ffcc; font-family: 'Courier New', Courier, monospace; }
+    .stApp { background-color: #01050a; color: #00ffcc; font-family: 'Courier New', Courier, monospace; }
     
-    @keyframes orbit {
-        0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
-        100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+    /* Warp Drive & Quantum Field Animations */
+    @keyframes warp-speed {
+        0% { transform: scale(1); opacity: 0.1; }
+        50% { transform: scale(1.5); opacity: 0.5; }
+        100% { transform: scale(2); opacity: 0; }
     }
-    .scanner-ring {
-        width: 160px; height: 160px; border: 1px solid rgba(0, 255, 204, 0.2);
-        border-radius: 50%; position: relative; margin: 40px auto;
+    .warp-line {
+        position: fixed; top: 50%; left: 50%; width: 2px; height: 100px;
+        background: linear-gradient(to bottom, transparent, #00ffcc);
+        animation: warp-speed 0.5s linear infinite;
     }
-    .scanner-dot {
-        width: 12px; height: 12px; background: #00ffcc; border-radius: 50%;
-        position: absolute; top: 74px; left: 74px; animation: orbit 1.5s linear infinite;
-        box-shadow: 0 0 20px #00ffcc;
+    
+    @keyframes quantum-spin {
+        from { transform: rotate(0deg) scale(1); }
+        to { transform: rotate(360deg) scale(1.2); }
+    }
+    .quantum-core {
+        width: 100px; height: 100px; border: 1px dashed #00ffcc;
+        border-radius: 50%; animation: quantum-spin 2s linear infinite;
+        margin: 20px auto; box-shadow: 0 0 20px #00ffcc;
     }
 
+    /* Sci-Fi UI Elements */
     .stButton>button {
         width: 100%; background: rgba(0, 255, 204, 0.05);
-        border: 1px solid #00ffcc; color: #00ffcc; transition: 0.5s;
+        border: 1px solid #00ffcc; color: #00ffcc; transition: 0.3s;
+        text-transform: uppercase;
     }
-    .stButton>button:hover {
-        background: #00ffcc; color: #01080e; box-shadow: 0 0 30px #00ffcc;
-    }
-
+    .stButton>button:hover { background: #00ffcc; color: #01050a; box-shadow: 0 0 40px #00ffcc; }
+    
     div[data-testid="stVerticalBlock"] > div:has(div.floating-anchor) {
         position: fixed; bottom: 30px; right: 30px; z-index: 999;
         background-color: #0a1520; padding: 12px; border: 1px solid #00ffcc;
@@ -50,131 +59,111 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. HARMONY ANIMATION ENGINE ---
-def run_system_animation(text="SYNCHRONIZING WITH G.U.T."):
+# --- 3. RANDOMIZED SCIFI ANIMATION ENGINE ---
+def run_quantum_transition(label="INITIALIZING PHASE SHIFT"):
     placeholder = st.empty()
+    style = random.choice(["WARP", "QUANTUM", "TERMINAL"])
+    
     with placeholder.container():
-        st.markdown('<div class="scanner-ring"><div class="scanner-dot"></div></div>', unsafe_allow_html=True)
-        st.write(f"### {text}")
-        equations = [
-            "G_μν Convergence: Verified.",
-            "Resonance Lock: 1420.405 MHz.",
-            "Loading Athena Knowledge Grid...",
-            "Deploying T.L.C. Security Shield...",
-            "Ocean Aegis Marine Interface: Active."
+        if style == "WARP":
+            st.markdown('<div class="warp-line" style="rotate: 45deg;"></div>', unsafe_allow_html=True)
+            st.write(f"### 🌌 {label}: WARP ENGAGED")
+        elif style == "QUANTUM":
+            st.markdown('<div class="quantum-core"></div>', unsafe_allow_html=True)
+            st.write(f"### ⚛️ {label}: QUANTUM LOCK")
+        else:
+            st.write(f"### 💾 {label}: EXECUTING G.U.T. LOGIC")
+            
+        logs = [
+            "Collapsing Wave Functions...", "Stabilizing 1420.405 MHz Resonance...",
+            "Expanding Event Horizon...", "Correcting Gravitational Entropy...",
+            "Athena Grid Synchronizing...", "T.L.C. Security Verified."
         ]
-        for eq in equations:
-            st.code(f">>> {eq}", language=None)
-            time.sleep(0.8)
+        for log in random.sample(logs, 3):
+            st.code(f">>> {log}")
+            time.sleep(0.7)
     placeholder.empty()
 
-# --- 4. REAL-TIME CORRECTION VISUALIZER (25 SECONDS) ---
-def correction_monitor(tech_name, type="SINE", duration=100): 
+# --- 4. REAL-TIME CORRECTION MONITOR (25 SECONDS) ---
+def correction_monitor(tech_name, tech_type):
+    run_quantum_transition(f"CALIBRATING {tech_name.upper()}")
     plot_placeholder = st.empty()
     status_placeholder = st.empty()
     t = 0
-    # Total iterations for ~25 seconds (100 * 0.25s)
+    duration = 100 # ~25s total
+    
     for i in range(duration):
         t += 0.3
         x = np.linspace(t, t + 15, 150)
+        ratio = i / duration
+        noise = (1 - ratio) * np.random.normal(0, 1.8, 150)
         
-        # Calculate "Dissonance" vs "Harmony"
-        # Early iterations (i close to 0) are very messy/erratic.
-        # Late iterations (i close to duration) are perfectly aligned.
-        completion_ratio = i / duration
-        dissonance = (1 - completion_ratio) * np.random.normal(0, 1.5, 150)
-        
-        if type == "NULL-G": base_y = np.sin(x * 2.5)
-        elif type == "STASIS": base_y = np.sin(x) * 0.05 
-        elif type == "SENTINEL": base_y = np.sin(x) * np.tan(np.sin(x) * 0.9) 
-        elif type == "AEGIS": base_y = np.sin(x * 0.5)
-        elif type == "ATHENA": base_y = np.abs(np.sin(x))
-        elif type == "TLC": base_y = np.sin(x) * np.exp(-np.power((x % 8 - 4), 2) / 4)
-        else: base_y = np.sin(x)
+        # Tech-specific wave signatures
+        if tech_type == "NULL-G": base = np.sin(x * 3.0)
+        elif tech_type == "STASIS": base = np.sin(x) * 0.02
+        elif tech_type == "SENTINEL": base = np.sin(x) * np.tan(np.sin(x) * 0.85)
+        elif tech_type == "TLC": base = np.sin(x) * np.exp(-np.power((x % 8 - 4), 2) / 4)
+        else: base = np.sin(x)
             
-        final_y = (base_y * completion_ratio) + dissonance
-        null_line = np.zeros(150)
-        
-        df = pd.DataFrame({'Active Resonance': final_y, 'Null Point': null_line})
+        final_y = (base * ratio) + noise
+        df = pd.DataFrame({'Harmony Resonance': final_y, 'Null Point': np.zeros(150)})
         plot_placeholder.line_chart(df, height=250)
-        
-        # Real-time status update
-        percent = int(completion_ratio * 100)
-        status_placeholder.write(f"**STATUS:** {tech_name} Correction in Progress... **{percent}% Aligned**")
-        
-        time.sleep(0.25) 
+        status_placeholder.write(f"**{tech_name}:** {int(ratio*100)}% Harmonic Alignment")
+        time.sleep(0.25)
     
-    status_placeholder.success(f"**{tech_name} CORRECTION COMPLETE:** Harmonic Lock at 1420.405 MHz.")
+    status_placeholder.success(f"**LOG:** {tech_name} Corrected to 1420.405 MHz Standard.")
 
 # --- 5. ACCESS CONTROL ---
 if "auth" not in st.session_state:
-    st.session_state.auth = False
-    st.session_state.role = None
+    st.session_state.auth, st.session_state.role = False, None
 
 def login_portal():
     st.title("🏛️ HARMONY OS: SECURE PORTAL")
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("👤 ADMIN ACCESS")
-        admin_pass = st.text_input("Master Key", type="password")
-        if st.button("VERIFY ADMIN"):
-            if admin_pass == "makave7181!!TCH":
-                run_system_animation("AUTHORIZING MASTER ADMIN...")
-                st.session_state.auth = True
-                st.session_state.role = "ADMIN"
-                st.rerun()
-            else: st.error("Access Denied.")
+        with st.form("Admin Access"):
+            key = st.text_input("Master Key", type="password")
+            if st.form_submit_button("AUTHENTICATE"):
+                if key == "makave7181!!TCH":
+                    run_quantum_transition("ADMIN VERIFIED")
+                    st.session_state.auth, st.session_state.role = True, "ADMIN"
+                    st.rerun()
     with col2:
-        st.subheader("👥 GUEST ACCESS")
         if st.button("ENTER AS GUEST"):
-            run_system_animation("INITIALIZING GUEST SESSION...")
-            st.session_state.auth = True
-            st.session_state.role = "GUEST"
+            run_quantum_transition("GUEST ACCESS GRANTED")
+            st.session_state.auth, st.session_state.role = True, "GUEST"
             st.rerun()
 
 if not st.session_state.auth:
     login_portal()
     st.stop()
 
-# --- 6. MAIN ESTATE INTERFACE ---
+# --- 6. MAIN INTERFACE ---
 st.title("🏛️ THE T AND C ESTATE")
-st.write(f"Identity: **{st.session_state.role}** | Universal Resonance: **1420.405 MHz**")
+st.write(f"Session: **{st.session_state.role}** | Universal Resonance: **1420.405 MHz**")
 
-# --- 7. THE MASTER TEST AREA ---
 if st.button("🧪 OPEN TEST AREA (HARMONY APPLICATIONS)"):
     st.session_state.show_tests = not st.session_state.get('show_tests', False)
 
 if st.session_state.get('show_tests'):
-    st.markdown("---")
+    run_quantum_transition("EXPANDING TEST MODULES")
     tabs = st.tabs(["🚀 Physics", "🧬 Bio-Harmony", "🌊 Marine", "🛡️ Defense", "📚 Knowledge"])
     
     with tabs[0]: # PHYSICS
-        st.subheader("Propulsion & Entropy Control")
-        col1, col2 = st.columns(2)
-        with col1:
-            mass_kg = st.slider("Null-G Mass (kg)", 1, 10000000, 50000)
+        c1, c2 = st.columns(2)
+        with c1:
+            mass = st.slider("Null-G Mass (kg)", 1, 10000000, 50000)
             if st.button("ENGAGE NULL-G"): correction_monitor("Null-G Propulsion", "NULL-G")
-        with col2:
-            st.write("Pyro-Stasis Calibration")
+        with c2:
             if st.button("INITIATE STASIS"): correction_monitor("Pyro-Stasis", "STASIS")
 
     with tabs[1]: # BIO-HARMONY
-        st.subheader("Bio-Harmony: Sentinel Cell Protocol")
-        if st.button("START BIO-SCAN"): correction_monitor("Bio-Harmony", "SENTINEL")
-
-    with tabs[2]: # MARINE
-        st.subheader("Ocean Aegis Interface")
-        if st.button("DEPLOY OCEAN AEGIS"): correction_monitor("Ocean Aegis", "AEGIS")
+        if st.button("START SENTINEL SCAN"): correction_monitor("Bio-Harmony", "SENTINEL")
 
     with tabs[3]: # DEFENSE
-        st.subheader("T.L.C. Shield & The Halo")
         if st.button("ACTIVATE T.L.C. SHIELD"): correction_monitor("T.L.C. Shield", "TLC")
 
-    with tabs[4]: # KNOWLEDGE
-        st.subheader("Athena Knowledge Grid")
-        if st.button("SYNC ATHENA GRID"): correction_monitor("Athena Grid", "ATHENA")
-
-# --- 8. FLOATING CHAT & AI ---
+# --- 7. FLOATING CHAT ---
 st.markdown('<div class="floating-anchor"></div>', unsafe_allow_html=True)
 if "ai_on" not in st.session_state: st.session_state.ai_on = False
 if "messages" not in st.session_state: st.session_state.messages = []

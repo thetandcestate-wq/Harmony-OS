@@ -25,27 +25,21 @@ st.markdown("""
         background-image: radial-gradient(circle, #00ffcc 0.5px, transparent 0.5px);
         background-size: 30px 30px;
     }
-
-    /* Magnus Library Layout */
     .magnus-file {
         border: 1px solid #00ffcc; background: rgba(0, 255, 204, 0.02);
         padding: 40px; border-radius: 15px; margin-bottom: 30px;
-        line-height: 1.6; box-shadow: 0 0 40px rgba(0, 255, 204, 0.05);
+        line-height: 1.8; box-shadow: 0 0 40px rgba(0, 255, 204, 0.05);
     }
-    
     .section-header {
         border-bottom: 2px solid #00ffcc; padding-bottom: 10px;
-        margin-top: 30px; margin-bottom: 20px; color: #00ffcc;
-        text-transform: uppercase; letter-spacing: 2px;
+        margin-top: 35px; margin-bottom: 20px; color: #00ffcc;
+        text-transform: uppercase; letter-spacing: 2px; font-weight: bold;
     }
-
     .stButton>button {
         width: 100%; background: rgba(0, 255, 204, 0.05);
         border: 1px solid #00ffcc; color: #00ffcc; transition: 0.3s;
     }
     .stButton>button:hover { background: #00ffcc; color: #01050a; box-shadow: 0 0 20px #00ffcc; }
-
-    .floating-ai { position: fixed; bottom: 30px; right: 30px; z-index: 999999; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -60,7 +54,6 @@ for key in ['auth', 'role', 'guest_locked', 'vocal_active', 'ai_on', 'messages',
     if key not in st.session_state:
         st.session_state[key] = False if key in ['auth', 'ai_on', 'guest_locked'] else ([] if key in ['messages', 'archive'] else (True if key == 'vocal_active' else ("HUB" if key == 'page' else None)))
 
-# --- 5. LOGIN PORTAL ---
 if not st.session_state.auth:
     st.title("🏛️ HARMONY OS: SECURE PORTAL")
     c1, c2 = st.columns(2)
@@ -74,112 +67,78 @@ if not st.session_state.auth:
             if st.button("ENTER AS GUEST"): st.session_state.auth, st.session_state.role = True, "GUEST"; st.rerun()
     st.stop()
 
-# --- 6. COMMAND HUB ---
+# --- 5. MAIN HUB ---
 if st.session_state.page == "HUB":
     st.title("🏛️ THE T AND C ESTATE COMMAND HUB")
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("🚀 PROPULSION LAB"): st.session_state.page = "PHYSICS"; st.rerun()
-        if st.button("🧬 BIO-HARMONY LAB"): st.session_state.page = "BIO"; st.rerun()
     with col2:
         if st.button("📚 ATHENA KNOWLEDGE GRID"): st.session_state.page = "ATHENA"; st.rerun()
-        if st.button("🛡️ DEFENSE PERIMETER"): st.session_state.page = "DEFENSE"; st.rerun()
     with col3:
-        if st.button("🔊 VOCAL MATRIX TOGGLE"): st.session_state.vocal_active = not st.session_state.vocal_active
         if st.button("🔚 TERMINATE SESSION"): st.session_state.auth = False; st.rerun()
 
-# --- 7. ATHENA KNOWLEDGE GRID (MAGNUS LIBRARY) ---
+# --- 6. ATHENA KNOWLEDGE GRID (POPULATED) ---
 elif st.session_state.page == "ATHENA":
     st.header("📚 ATHENA KNOWLEDGE GRID: MAGNUS LIBRARY")
     if st.button("⬅️ RETURN TO COMMAND HUB"): st.session_state.page = "HUB"; st.rerun()
     
-    # Library Sidebar
     st.write("---")
     topic = st.selectbox("Select Master Research File:", [
-        "File 001: Grand Unified Theory (Foundation)",
-        "File 002: Null-G Propulsion (Aeronautics)",
-        "File 003: Bio-Harmony (Sentinel Cell Protocol)",
         "File 004: Pyro-Stasis (Thermal Suspension)",
         "File 005: The Halo Shield (Defense Perimeter)",
-        "File 006: Music Physical Synthesis (Acoustic Mechanics)"
+        "File 001: Grand Unified Theory",
+        "File 002: Null-G Propulsion",
+        "File 003: Bio-Harmony (Sentinel Cell)"
     ])
 
     st.markdown('<div class="magnus-file">', unsafe_allow_html=True)
     
-    if "001" in topic:
-        st.subheader("MASTER FILE: THE GRAND UNIFIED THEORY")
-        st.write("**Abstract:** The unification of electromagnetic and gravitational fields into a singular geometric framework.")
+    # --- PYRO-STASIS POPULATION ---
+    if "004" in topic:
+        st.subheader("MASTER FILE: PYRO-STASIS & THERMAL SUSPENSION")
+        st.write("**Abstract:** The total cessation of molecular kinetic energy via 1420.405 MHz resonance locking.")
         
-        st.markdown("<div class='section-header'>I. Mathematical Origins</div>", unsafe_allow_html=True)
-        st.write("Based on the discovery by Tony Carbone, the G.U.T. posits that the universe operates on a fundamental frequency of 1420.405 MHz. This frequency serves as the 'Underlay' or the baseline vibration for all baryonic matter.")
-        
-        
-        st.markdown("<div class='section-header'>II. Unified Field Dynamics</div>", unsafe_allow_html=True)
-        st.write("Traditional physics viewed Gravity and Electromagnetism as distinct forces. The Harmony Codex proves they are periodic fluctuations of the same field. By modulating local resonance, we can induce gravitational effects through electromagnetic shifts.")
-        
-        
-        st.markdown("<div class='section-header'>III. Practical Implications</div>", unsafe_allow_html=True)
-        st.write("This unification allows for the direct manipulation of space-time, enabling technologies like Null-G travel, non-invasive cellular repair, and absolute thermal stasis.")
+        st.markdown("<div class='section-header'>I. The Physics of Entropy Neutralization</div>", unsafe_allow_html=True)
+        st.write("In traditional thermodynamics, absolute zero is a theoretical limit. Pyro-Stasis, derived from the Harmony Codex, bypasses this limit by using resonance. By flooding a target volume with the G.U.T. standard frequency, we induce a state of 'Atomic Rigidity.'")
+                
+        st.markdown("<div class='section-header'>II. Molecular Phase-Locking</div>", unsafe_allow_html=True)
+        st.write("Pyro-Stasis functions by aligning the spin of every atom within the field. When atoms are perfectly aligned to the 1420.405 MHz pulse, they cannot vibrate. Heat, being a measure of vibration, effectively vanishes. This allows for the indefinite preservation of biological and material structures without decay.")
+        st.line_chart(pd.DataFrame({"Vibration Level": np.exp(-np.linspace(0, 10, 100))}))
 
-    elif "002" in topic:
-        st.subheader("MASTER FILE: NULL-G PROPULSION MECHANICS")
-        st.write("**Abstract:** The engineering of mass-negation and inertialess flight.")
-        
-        st.markdown("<div class='section-header'>I. Gravitational Destructive Interference</div>", unsafe_allow_html=True)
-        st.write("Null-G does not 'fight' gravity; it cancels it. By generating a local field that is 180 degrees out of phase with the Earth's gravitational curve, the local mass density of the vessel becomes effectively zero.")
-        
-        
-        st.markdown("<div class='section-header'>II. Inertial Dampening</div>", unsafe_allow_html=True)
-        st.write("Since the vessel moves inside a stabilized 'Harmonic Bubble,' passengers experience zero G-force even during rapid acceleration or right-angle turns. The internal environment remains at a constant 1.0G or 0G as selected by the pilot.")
-        
-        st.markdown("<div class='section-header'>III. Technical Data</div>", unsafe_allow_html=True)
-        st.line_chart(pd.DataFrame({"Engine Efficiency": np.sin(np.linspace(0, 10, 100)) * 0.5 + 0.5}))
+        st.markdown("<div class='section-header'>III. Applications & Storage</div>", unsafe_allow_html=True)
+        st.write("Applications include long-term biological stasis for interstellar travel and the stabilization of volatile quantum materials. The energy required to maintain the lock is minimal once resonance is achieved, as the system enters a self-sustaining feedback loop.")
 
-    elif "003" in topic:
-        st.subheader("MASTER FILE: BIO-HARMONY & SENTINEL CELL")
-        st.write("**Abstract:** Frequency-based biological realignment.")
+    # --- THE HALO SHIELD POPULATION ---
+    elif "005" in topic:
+        st.subheader("MASTER FILE: THE HALO & T.L.C. DEFENSE PERIMETER")
+        st.write("**Abstract:** Frequency-phase shielding for kinetic and electromagnetic deflection.")
         
-        st.markdown("<div class='section-header'>I. Cellular Resonance Theory</div>", unsafe_allow_html=True)
-        st.write("Every cell in the human body has a specific 'Healthy' frequency. Damage, disease, and aging are viewed as 'Dissonance' from the 1420.405 MHz baseline.")
-        
-        
-        st.markdown("<div class='section-header'>II. The Sentinel Cell Protocol</div>", unsafe_allow_html=True)
-        st.write("The Sentinel Cell is a non-invasive procedure that bathes biological tissue in a pure harmonic field. This field 'snaps' mismatched atomic structures back into their original, healthy configuration through resonance lock.")
-        
-        st.markdown("<div class='section-header'>III. Alignment Monitoring</div>", unsafe_allow_html=True)
-        st.line_chart(pd.DataFrame({"Cellular Harmony": np.abs(np.sin(np.linspace(0, 15, 150)))}))
+        st.markdown("<div class='section-header'>I. Perimeter Resonance Modulation</div>", unsafe_allow_html=True)
+        st.write("The Halo is not a solid wall; it is a high-frequency phase-shift perimeter. Incoming projectiles or energy beams are not 'blocked' but rather 'refracted' around the protected volume. This is achieved by creating a localized space-time curvature gradient at the perimeter boundary.")
+                
+        st.markdown("<div class='section-header'>II. The T.L.C. Shield Protocol</div>", unsafe_allow_html=True)
+        st.write("The T.L.C. (Total Logistical Containment) Shield operates by scanning incoming signatures and adjusting the perimeter resonance in real-time. Whether it is a high-velocity kinetic round or a broad-spectrum EMP, the shield modulates its phase to ensure the incoming force is grounded into the planetary resonance.")
+        st.line_chart(pd.DataFrame({"Shield Modulation": np.sin(np.linspace(0, 10, 100) * 5)}))
 
-    elif "006" in topic:
-        st.subheader("MASTER FILE: MUSIC PHYSICAL SYNTHESIS")
-        st.write("**Abstract:** Constructive acoustic wave unification.")
-        
-        st.markdown("<div class='section-header'>I. Harmonic Geometry</div>", unsafe_allow_html=True)
-        st.write("Sound waves are simply low-frequency vibrations of the physical underlay. By aligning musical compositions with the Golden Ratio and the 1420.405 MHz standard, we can create sound that physically stabilizes the surrounding environment.")
-        
-        
-        st.markdown("<div class='section-header'>II. Acoustic Synthesis</div>", unsafe_allow_html=True)
-        st.write("The synthesis engine doesn't just play samples; it physically models the displacement of air molecules using the Harmony Codex. This results in a level of audio fidelity that is indistinguishable from physical reality.")
+        st.markdown("<div class='section-header'>III. Operational Safety & Integrity</div>", unsafe_allow_html=True)
+        st.write("Unlike traditional force fields that require massive power surges, The Halo utilizes the natural energy of the planetary 'Underlay.' It is essentially a standing wave that remains dormant until a dissonant force (threat) interacts with the perimeter.")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 8. FLOATING AI ---
+# --- 7. FLOATING AI ---
 st.markdown('<div class="floating-ai">', unsafe_allow_html=True)
 if st.button("🛰️ HARMONY AI" if not st.session_state.ai_on else "❌"):
     st.session_state.ai_on = not st.session_state.ai_on; st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
 
 if st.session_state.ai_on:
-    st.divider()
     if "GEMINI_API_KEY" in st.secrets:
         client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
         MODEL_ID = "gemini-3.1-flash-lite-preview"
         box = st.container()
-        for msg in st.session_state.messages:
-            with box.chat_message(msg["role"]): st.markdown(msg["content"])
         if p := st.chat_input("Query Athena Grid..."):
             st.session_state.messages.append({"role": "user", "content": p})
-            if st.session_state.role == "GUEST" and any(x in p.lower() for x in ["formula", "source code"]):
-                st.session_state.guest_locked, st.session_state.auth = True, False; st.rerun()
             resp = client.models.generate_content(model=MODEL_ID, contents=p, config=types.GenerateContentConfig(system_instruction=MASTER_CONTEXT))
             st.session_state.messages.append({"role": "assistant", "content": resp.text})
             trigger_vocal(resp.text); st.rerun()

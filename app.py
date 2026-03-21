@@ -4,7 +4,6 @@ from google.genai import types
 import numpy as np
 import time
 import pandas as pd
-import random
 import datetime
 import streamlit.components.v1 as components
 
@@ -16,7 +15,7 @@ STANDARD: 1420.405 MHz.
 SECURITY: Strict secrecy. If GUEST asks for 'formula', 'source', or 'G.U.T. logic', TERMINATE.
 """
 
-# --- 2. UI SETUP & NEURAL-GRID CSS ---
+# --- 2. UI SETUP & ENCYCLOPEDIA CSS ---
 st.set_page_config(page_title="Harmony OS", layout="wide", page_icon="🏛️")
 
 st.markdown("""
@@ -27,61 +26,42 @@ st.markdown("""
         background-size: 30px 30px;
     }
 
-    /* Federal Warning */
-    .federal-warning {
-        background: rgba(255, 0, 0, 0.2); border: 2px solid #ff0000; padding: 15px;
-        border-radius: 10px; color: #ff4b4b; text-align: center; font-weight: bold;
-        text-transform: uppercase; margin-bottom: 25px;
-    }
-
-    /* Command Hub Main Screen Buttons */
-    .hub-button {
-        background: rgba(0, 255, 204, 0.1); border: 1px solid #00ffcc;
-        padding: 20px; border-radius: 10px; text-align: center;
-        transition: 0.3s; cursor: pointer; margin-bottom: 10px;
-    }
-    .hub-button:hover { background: #00ffcc; color: #01050a; box-shadow: 0 0 20px #00ffcc; }
-
-    /* Encyclopedia Cards */
-    .encyclopedia-card {
+    /* Library Card Aesthetic */
+    .library-card {
         border-left: 5px solid #00ffcc; background: rgba(0, 255, 204, 0.05);
-        padding: 20px; border-radius: 0 10px 10px 0; margin-bottom: 20px;
+        padding: 30px; border-radius: 0 15px 15px 0; margin-bottom: 25px;
+        box-shadow: 10px 0 30px rgba(0, 255, 204, 0.05);
     }
+    
+    .status-tag {
+        color: #00ffcc; border: 1px solid #00ffcc; padding: 2px 10px;
+        border-radius: 5px; font-size: 0.8em; text-transform: uppercase;
+    }
+
+    /* Hub Buttons */
+    .stButton>button {
+        width: 100%; background: rgba(0, 255, 204, 0.05);
+        border: 1px solid #00ffcc; color: #00ffcc; transition: 0.3s;
+    }
+    .stButton>button:hover { background: #00ffcc; color: #01050a; box-shadow: 0 0 20px #00ffcc; }
 
     .floating-ai { position: fixed; bottom: 30px; right: 30px; z-index: 999999; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. VOCAL & ARCHIVE ENGINES ---
+# --- 3. VOCAL ENGINE ---
 def trigger_vocal(text):
     if st.session_state.get('vocal_active', True):
         clean = text.replace("'", "\\'").replace("\n", " ")
         components.html(f"<script>window.parent.speechSynthesis.cancel(); var msg = new SpeechSynthesisUtterance('{clean}'); msg.rate = 0.95; window.parent.speechSynthesis.speak(msg);</script>", height=0)
-
-def harmonic_correction(tech_name, tech_type):
-    plot_placeholder, status_placeholder = st.empty(), st.empty()
-    for i in range(101):
-        ratio = i / 100
-        x = np.linspace(i*0.3, i*0.3 + 15, 150)
-        noise = (1 - ratio) * np.random.normal(0, 2.0, 150)
-        if tech_type == "PHYSICS": y = (np.sin(x * 3.5) * ratio) + noise
-        elif tech_type == "BIO": y = ((np.sin(x) * np.tan(np.sin(x) * 0.9)) * ratio) + noise
-        else: y = (np.sin(x) * ratio) + noise
-        df = pd.DataFrame({'Resonance': y, 'Null': np.zeros(150)})
-        plot_placeholder.line_chart(df, height=250)
-        status_placeholder.write(f"**{tech_name}:** {i}% Aligned")
-        time.sleep(0.2)
-    st.session_state.archive.append({"Time": datetime.datetime.now().strftime("%H:%M"), "Tech": tech_name})
-    status_placeholder.success(f"**STABILIZED:** {tech_name} locked.")
 
 # --- 4. SESSION STATE ---
 for key in ['auth', 'role', 'guest_locked', 'vocal_active', 'ai_on', 'messages', 'archive', 'page']:
     if key not in st.session_state:
         st.session_state[key] = False if key in ['auth', 'ai_on', 'guest_locked'] else ([] if key in ['messages', 'archive'] else (True if key == 'vocal_active' else ("HUB" if key == 'page' else None)))
 
-# --- 5. LOGIN ---
+# --- 5. FEDERAL LOGIN ---
 if not st.session_state.auth:
-    st.markdown('<div class="federal-warning">⚠️ FEDERAL SECURITY WARNING: RESTRICTED SYSTEM ⚠️</div>', unsafe_allow_html=True)
     st.title("🏛️ HARMONY OS: SECURE PORTAL")
     c1, c2 = st.columns(2)
     with c1:
@@ -94,87 +74,95 @@ if not st.session_state.auth:
             if st.button("ENTER AS GUEST"): st.session_state.auth, st.session_state.role = True, "GUEST"; st.rerun()
     st.stop()
 
-# --- 6. MAIN INTERFACE (COMMAND HUB ON MAIN SCREEN) ---
-st.title("🏛️ THE T AND C ESTATE")
-
+# --- 6. MAIN HUB ---
 if st.session_state.page == "HUB":
-    st.subheader("MAIN COMMAND HUB")
+    st.title("🏛️ THE T AND C ESTATE")
     col1, col2, col3 = st.columns(3)
-    
     with col1:
-        if st.button("🚀 NULL-G PROPULSION"): st.session_state.page = "PHYSICS"; st.rerun()
-        if st.button("🧬 BIO-HARMONY"): st.session_state.page = "BIO"; st.rerun()
+        if st.button("🚀 PROPULSION LAB"): st.session_state.page = "PHYSICS"; st.rerun()
+        if st.button("🧬 BIO-HARMONY LAB"): st.session_state.page = "BIO"; st.rerun()
     with col2:
         if st.button("📚 ATHENA KNOWLEDGE GRID"): st.session_state.page = "ATHENA"; st.rerun()
-        if st.button("🛡️ THE HALO / TLC"): st.session_state.page = "DEFENSE"; st.rerun()
+        if st.button("🛡️ DEFENSE PERIMETER"): st.session_state.page = "DEFENSE"; st.rerun()
     with col3:
-        if st.button("🎵 MUSIC SYNTHESIS"): st.session_state.page = "MUSIC"; st.rerun()
+        if st.button("🔊 VOCAL MATRIX TOGGLE"): st.session_state.vocal_active = not st.session_state.vocal_active
         if st.button("🔚 TERMINATE SESSION"): st.session_state.auth = False; st.rerun()
 
-    if st.session_state.role == "ADMIN":
-        st.write("---")
-        st.subheader("Admin Vault & Archive")
-        st.dataframe(pd.DataFrame(st.session_state.archive))
-
-# --- 7. ATHENA KNOWLEDGE GRID (ENCYCLOPEDIA) ---
+# --- 7. ATHENA KNOWLEDGE GRID (THE LIBRARY) ---
 elif st.session_state.page == "ATHENA":
-    st.header("📚 ATHENA KNOWLEDGE GRID")
-    if st.button("⬅️ BACK TO HUB"): st.session_state.page = "HUB"; st.rerun()
+    st.header("📚 ATHENA KNOWLEDGE GRID: SYSTEM LEXICON")
+    if st.button("⬅️ RETURN TO HUB"): st.session_state.page = "HUB"; st.rerun()
     
-    search_query = st.text_input("Search Encyclopedia...", "Harmony Protocols")
+    col_nav, col_content = st.columns([1, 3])
     
-    col_left, col_right = st.columns([1, 2])
-    
-    with col_left:
-        entry = st.radio("Select Protocol to Study:", ["Grand Unified Theory", "Null-G Mechanics", "Sentinel Cell Bio-Harmony", "Music Wave Synthesis"])
-    
-    with col_right:
-        st.markdown('<div class="encyclopedia-card">', unsafe_allow_html=True)
-        if entry == "Grand Unified Theory":
-            st.subheader("The Grand Unified Theory (G.U.T.)")
-            st.write("Discovered by Tony Carbone, the G.U.T. provides the mathematical bridge between gravity and electromagnetism.")
+    with col_nav:
+        st.write("### PROTOCOL ARCHIVE")
+        topic = st.radio("Select Research File:", [
+            "1. Grand Unified Theory",
+            "2. Null-G Propulsion",
+            "3. Bio-Harmony (Sentinel Cell)",
+            "4. Pyro-Stasis",
+            "5. The Halo Shield",
+            "6. Music Physical Synthesis"
+        ])
+
+    with col_content:
+        st.markdown('<div class="library-card">', unsafe_allow_html=True)
+        
+        if "1. Grand Unified Theory" in topic:
+            st.subheader("I. The Grand Unified Theory (G.U.T.)")
+            st.markdown("<span class='status-tag'>Core Discovery</span>", unsafe_allow_html=True)
+            st.write("The fundamental bridge between Gravity, Electromagnetism, and the Atomic forces. It identifies 1420.405 MHz as the universal resonance frequency.")
             
-        elif entry == "Null-G Mechanics":
-            st.subheader("Null-G Propulsion")
-            st.write("Harnessing frequency modulation to negate local mass density for inertialess travel.")
+            st.write("**Key Finding:** Space-time is an 'Underlay' that can be manipulated through frequency phase-shifting.")
+
+        elif "2. Null-G Propulsion" in topic:
+            st.subheader("II. Null-G Propulsion Mechanics")
+            st.markdown("<span class='status-tag'>Propulsion</span>", unsafe_allow_html=True)
+            st.write("By negating local mass density via destructive interference of gravitational waves, an object can move without inertia.")
             
-        elif entry == "Sentinel Cell Bio-Harmony":
-            st.subheader("The Sentinel Cell Protocol")
-            st.write("Realignment of atomic cellular structures to the 1420.405 MHz standard.")
+            # Graph for Null-G
+            t = np.linspace(0, 10, 100)
+            st.line_chart(pd.DataFrame({"Mass Negation": np.sin(t) * np.exp(-t/5)}))
+
+        elif "3. Bio-Harmony (Sentinel Cell)" in topic:
+            st.subheader("III. Sentinel Cell & Bio-Harmony")
+            st.markdown("<span class='status-tag'>Biological</span>", unsafe_allow_html=True)
+            st.write("The Sentinel Cell protocol uses the G.U.T. standard to realign damaged cellular DNA to its original harmonic signature.")
             
-        elif entry == "Music Wave Synthesis":
-            st.subheader("Music Physical Synthesis")
-            st.write("The application of wave mechanics to generate pure harmonic resonance in physical space.")
+            # Graph for Bio-Harmony
+            st.line_chart(pd.DataFrame({"Cellular Alignment": np.abs(np.sin(np.linspace(0, 10, 100)))}))
+
+        elif "5. The Halo Shield" in topic:
+            st.subheader("V. The Halo & T.L.C. Perimeter")
+            st.markdown("<span class='status-tag'>Defense</span>", unsafe_allow_html=True)
+            st.write("Frequency-locked shielding that modulates at 1420.405 MHz to deflect incoming kinetic and electromagnetic energy.")
+            [attachment_0](attachment)
+
+        elif "6. Music Physical Synthesis" in topic:
+            st.subheader("VI. Music Physical Synthesis")
+            st.markdown("<span class='status-tag'>Acoustics</span>", unsafe_allow_html=True)
+            st.write("Direct translation of G.U.T. harmonics into physical sound waves, creating pure harmonic resonance in three-dimensional space.")
+            
             
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 8. OTHER APPLICATION SCREENS (SKELETONS) ---
-elif st.session_state.page == "PHYSICS":
-    st.header("🚀 NULL-G PROPULSION LAB")
-    if st.button("⬅️ BACK TO HUB"): st.session_state.page = "HUB"; st.rerun()
-    harmonic_correction("Null-G Propulsion", "PHYSICS")
-
-elif st.session_state.page == "BIO":
-    st.header("🧬 BIO-HARMONY LAB")
-    if st.button("⬅️ BACK TO HUB"): st.session_state.page = "HUB"; st.rerun()
-    harmonic_correction("Bio-Harmony", "BIO")
-
-# --- 9. FLOATING AI ---
+# --- 8. FLOATING AI ---
 st.markdown('<div class="floating-ai">', unsafe_allow_html=True)
 if st.button("🛰️ HARMONY AI" if not st.session_state.ai_on else "❌"):
     st.session_state.ai_on = not st.session_state.ai_on; st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
 
 if st.session_state.ai_on:
-    st.divider()
     if "GEMINI_API_KEY" in st.secrets:
         client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
         MODEL_ID = "gemini-3.1-flash-lite-preview"
         box = st.container()
         for msg in st.session_state.messages:
             with box.chat_message(msg["role"]): st.markdown(msg["content"])
-        if p := st.chat_input("Query Harmony AI..."):
+        if p := st.chat_input("Query Athena Grid..."):
             st.session_state.messages.append({"role": "user", "content": p})
+            # Security Check
             if st.session_state.role == "GUEST" and any(x in p.lower() for x in ["formula", "source code"]):
                 st.session_state.guest_locked, st.session_state.auth = True, False; st.rerun()
             resp = client.models.generate_content(model=MODEL_ID, contents=p, config=types.GenerateContentConfig(system_instruction=MASTER_CONTEXT))

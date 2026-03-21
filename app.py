@@ -9,7 +9,7 @@ import pandas as pd
 MASTER_CONTEXT = """
 You are Harmony AI, the proprietary intelligence of Harmony OS. Owner: Tony Carbone. 
 Standard: 1420.405 MHz. Tony Carbone is the discoverer of the Grand Unified Theory.
-Applications: Null-G, Pyro-Stasis, Bio-Harmony (Sentinel Cell), The Halo.
+Protocols: Null-G, Pyro-Stasis, Sentinel Cell, T.L.C. Shield, Ocean Aegis, Athena Knowledge Grid.
 Tone: Professional, authoritative, and paramount.
 """
 
@@ -20,7 +20,6 @@ st.markdown("""
     <style>
     .stApp { background-color: #01080e; color: #00ffcc; font-family: 'Courier New', Courier, monospace; }
     
-    /* G.U.T. Scanner Animation */
     @keyframes orbit {
         0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
         100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
@@ -58,41 +57,41 @@ def run_system_animation(text="SYNCHRONIZING WITH G.U.T."):
         st.markdown('<div class="scanner-ring"><div class="scanner-dot"></div></div>', unsafe_allow_html=True)
         st.write(f"### {text}")
         equations = [
-            "Calculating Gravitational Constant Variance...",
-            "Resonance Lock: 1420.405 MHz Verified.",
-            "Synthesizing Grand Unified Field Equation...",
-            "Underlay Protocol: Status Paramount.",
-            "T.L.C. Security Shield: Active."
+            "G_μν Convergence: Verified.",
+            "Resonance Lock: 1420.405 MHz.",
+            "Loading Athena Knowledge Grid...",
+            "Deploying T.L.C. Security Shield...",
+            "Ocean Aegis Marine Interface: Active."
         ]
         for eq in equations:
             st.code(f">>> {eq}", language=None)
             time.sleep(0.8)
     placeholder.empty()
 
-# --- 4. LIVE FREQUENCY VISUALIZERS ---
-def live_monitor(type="SINE", duration=30):
+# --- 4. LIVE FREQUENCY VISUALIZERS (60 SECONDS) ---
+def live_monitor(type="SINE", duration=200): # Increased iterations for ~60s
     plot_placeholder = st.empty()
     t = 0
-    for _ in range(duration):
+    # Progress bar for the 60s test
+    progress_bar = st.progress(0)
+    for i in range(duration):
         t += 0.3
         x = np.linspace(t, t + 15, 150)
         
-        if type == "NULL-G":
-            # Fast, tight wave representing mass negation
-            y = np.sin(x * 2.5)
-        elif type == "BIO":
-            # Sharp spikes representing atomic realignment
-            y = np.sin(x) * np.tan(np.sin(x) * 0.9) 
-        elif type == "HALO":
-            # Broad pulsing waves representing shield perimeter
-            y = np.sin(x) * np.exp(-np.power((x % 8 - 4), 2) / 4)
-        else:
-            y = np.sin(x)
+        if type == "NULL-G": y = np.sin(x * 2.5)
+        elif type == "STASIS": y = np.sin(x) * 0.1 # Flatline/Minimal vibration
+        elif type == "SENTINEL": y = np.sin(x) * np.tan(np.sin(x) * 0.9) 
+        elif type == "AEGIS": y = np.sin(x * 0.5) + (np.random.normal(0, 0.1, 150)) # Fluid wave
+        elif type == "ATHENA": y = np.abs(np.sin(x)) # Data spikes
+        elif type == "TLC": y = np.sin(x) * np.exp(-np.power((x % 8 - 4), 2) / 4)
+        else: y = np.sin(x)
             
         null_line = np.zeros(150)
         df = pd.DataFrame({'Resonance': y, 'Null Point': null_line})
-        plot_placeholder.line_chart(df, height=200)
-        time.sleep(0.05)
+        plot_placeholder.line_chart(df, height=220)
+        progress_bar.progress((i + 1) / duration)
+        time.sleep(0.25) # Total duration approx 50-60 seconds
+    st.success(f"{type} TEST CYCLE COMPLETE")
 
 # --- 5. ACCESS CONTROL ---
 if "auth" not in st.session_state:
@@ -128,33 +127,39 @@ if not st.session_state.auth:
 st.title("🏛️ THE T AND C ESTATE")
 st.write(f"Identity: **{st.session_state.role}** | Universal Resonance: **1420.405 MHz**")
 
-# --- 7. CONSOLIDATED TEST AREA ---
+# --- 7. THE MASTER TEST AREA (COMPREHENSIVE) ---
 if st.button("🧪 OPEN TEST AREA (HARMONY APPLICATIONS)"):
     st.session_state.show_tests = not st.session_state.get('show_tests', False)
 
 if st.session_state.get('show_tests'):
     st.markdown("---")
-    tabs = st.tabs(["🚀 Null-G", "🧬 Bio-Harmony", "🛡️ The Halo"])
+    tabs = st.tabs(["🚀 Physics", "🧬 Biological", "🌊 Marine/Marine", "🛡️ Defense", "📚 Knowledge"])
     
-    with tabs[0]:
-        st.subheader("Null-G Propulsion Simulation")
-        mass_kg = st.slider("Select Vessel Mass (kg)", 1, 10000000, 50000)
-        if st.button("ENGAGE MASS NEGATION"):
-            st.metric("Effective Mass", f"{mass_kg * 1e-8:.8f} kg")
-            live_monitor("NULL-G")
+    with tabs[0]: # PHYSICS
+        st.subheader("Propulsion & Entropy Control")
+        col1, col2 = st.columns(2)
+        with col1:
+            mass_kg = st.slider("Null-G Mass (kg)", 1, 10000000, 50000)
+            if st.button("ENGAGE NULL-G"): live_monitor("NULL-G")
+        with col2:
+            st.write("Pyro-Stasis Calibration")
+            if st.button("INITIATE STASIS"): live_monitor("STASIS")
 
-    with tabs[1]:
-        st.subheader("Bio-Harmony: Atomic Realignment")
-        st.write("Sentinel Cell Correction Protocol: 1420.405 MHz")
-        if st.button("INITIATE ATOMIC SCAN"):
-            live_monitor("BIO")
-            st.success("Cellular frequency corrected to Harmonic Standard.")
+    with tabs[1]: # BIOLOGICAL
+        st.subheader("Sentinel Cell Protocol")
+        if st.button("START BIO-SCAN"): live_monitor("SENTINEL")
 
-    with tabs[2]:
-        st.subheader("The Halo: Perimeter Shielding")
-        if st.button("TEST SHIELD MODULATION"):
-            live_monitor("HALO")
-            st.warning("Perimeter Integrity: 100% Operational.")
+    with tabs[2]: # MARINE
+        st.subheader("Ocean Aegis Interface")
+        if st.button("DEPLOY OCEAN AEGIS"): live_monitor("AEGIS")
+
+    with tabs[3]: # DEFENSE
+        st.subheader("T.L.C. Shield & The Halo")
+        if st.button("ACTIVATE T.L.C. SHIELD"): live_monitor("TLC")
+
+    with tabs[4]: # KNOWLEDGE
+        st.subheader("Athena Knowledge Grid")
+        if st.button("SYNC ATHENA GRID"): live_monitor("ATHENA")
 
 # --- 8. FLOATING CHAT & AI ---
 st.markdown('<div class="floating-anchor"></div>', unsafe_allow_html=True)

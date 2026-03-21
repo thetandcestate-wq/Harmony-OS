@@ -52,68 +52,39 @@ st.markdown("""
         animation: warp-pulse 1.2s ease-out infinite; pointer-events: none; z-index: 9999;
     }
 
-    div[data-testid="stVerticalBlock"] > div:has(div.floating-anchor) {
-        position: fixed; bottom: 30px; right: 30px; z-index: 999;
-        background-color: #0a1520; padding: 12px; border: 1px solid #00ffcc;
+    /* FLOATING ANCHOR FIX */
+    .floating-anchor {
+        position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+        background-color: #0a1520; padding: 15px; border: 1px solid #00ffcc;
         border-radius: 12px; box-shadow: 0 0 20px #00ffcc;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. VOCAL ENGINE (RE-ENGINEERED) ---
+# --- 3. VOCAL ENGINE (RE-BUILT FOR STREAMLIT) ---
 def speak_response(text):
-    if st.session_state.get('vocal_active', True):
-        # Escape text for JS
-        clean_text = text.replace("'", "\\'").replace("\n", " ")
-        components.html(f"""
-            <script>
-            window.parent.speechSynthesis.cancel();
-            var msg = new SpeechSynthesisUtterance('{clean_text}');
-            msg.rate = 0.9;
-            msg.pitch = 0.8;
-            window.parent.speechSynthesis.speak(msg);
-            </script>
-        """, height=0)
+    """Injected via components to avoid UI blocking."""
+    clean_text = text.replace("'", "\\'").replace("\n", " ")
+    components.html(f"""
+        <script>
+        window.speechSynthesis.cancel();
+        var msg = new SpeechSynthesisUtterance('{clean_text}');
+        msg.rate = 0.9;
+        msg.pitch = 0.8;
+        window.speechSynthesis.speak(msg);
+        </script>
+    """, height=0)
 
-# --- 4. QUANTUM TRANSITION ENGINE ---
-def run_quantum_transition(label="PHASE SHIFT"):
-    placeholder = st.empty()
-    with placeholder.container():
-        st.markdown('<div class="warp-effect"></div>', unsafe_allow_html=True)
-        st.write(f"### ⚛️ {label}")
-        for log in ["Synchronizing G.U.T. Constants...", "Resonance Lock: 1420.405 MHz"]:
-            st.code(f">>> {log}")
-            time.sleep(0.8)
-    placeholder.empty()
-
-# --- 5. CORRECTION MONITOR (25s) ---
-def correction_monitor(tech_name, tech_type):
-    run_quantum_transition(f"INITIATING {tech_name.upper()}")
-    plot_placeholder, status_placeholder = st.empty(), st.empty()
-    duration = 100 
-    for i in range(duration):
-        ratio = i / duration
-        x = np.linspace(i*0.3, i*0.3 + 15, 150)
-        noise = (1 - ratio) * np.random.normal(0, 2.0, 150)
-        
-        if tech_type == "NULL-G": base = np.sin(x * 3.5)
-        elif tech_type == "SENTINEL": base = np.sin(x) * np.tan(np.sin(x) * 0.9)
-        elif tech_type == "HALO": base = np.sin(x) * np.exp(-np.power((x % 8 - 4), 2) / 4)
-        else: base = np.sin(x)
-            
-        final_y = (base * ratio) + noise
-        df = pd.DataFrame({'Active Resonance': final_y, 'Null Point': np.zeros(150)})
-        plot_placeholder.line_chart(df, height=300)
-        status_placeholder.write(f"**{tech_name}:** {int(ratio*100)}% Harmonic Alignment")
-        time.sleep(0.25)
-    status_placeholder.success(f"**ALIGNED:** {tech_name} stabilized at 1420.405 MHz.")
-
-# --- 6. ACCESS CONTROL ---
-if "auth" not in st.session_state: st.session_state.auth, st.session_state.role = False, None
+# --- 4. SESSION STATE INITIALIZATION ---
+if "auth" not in st.session_state: st.session_state.auth = False
+if "role" not in st.session_state: st.session_state.role = None
 if "guest_locked" not in st.session_state: st.session_state.guest_locked = False
 if "vocal_active" not in st.session_state: st.session_state.vocal_active = True
+if "ai_on" not in st.session_state: st.session_state.ai_on = False
 if "messages" not in st.session_state: st.session_state.messages = []
+if "archive_logs" not in st.session_state: st.session_state.archive_logs = []
 
+# --- 5. LOGIN PORTAL ---
 def login_portal():
     st.markdown('<div class="federal-warning">⚠️ FEDERAL SECURITY WARNING: RESTRICTED SYSTEM ⚠️</div>', unsafe_allow_html=True)
     st.title("🏛️ HARMONY OS: SECURE PORTAL")
@@ -123,35 +94,50 @@ def login_portal():
             key = st.text_input("Master Key", type="password")
             if st.form_submit_button("AUTHENTICATE"):
                 if key == "makave7181!!TCH":
-                    run_quantum_transition("ADMIN VERIFIED")
-                    st.session_state.auth, st.session_state.role = True, "ADMIN"
+                    st.session_state.auth = True
+                    st.session_state.role = "ADMIN"
                     st.rerun()
                 else: st.error("Access Denied.")
     with col2:
         if not st.session_state.guest_locked:
             if st.button("ENTER AS GUEST"):
-                run_quantum_transition("GUEST ACCESS")
-                st.session_state.auth, st.session_state.role = True, "GUEST"
+                st.session_state.auth = True
+                st.session_state.role = "GUEST"
                 st.rerun()
+        else:
+            st.warning("GUEST ACCESS SEVERED.")
 
 if not st.session_state.auth:
     login_portal()
     st.stop()
 
-# --- 7. MAIN INTERFACE ---
-st.title("🏛️ THE T AND C ESTATE")
-
+# --- 6. SIDEBAR CONTROLS (VAULT & TERMINATE) ---
 with st.sidebar:
-    st.title("🛠️ SYSTEM CONTROLS")
-    st.session_state.vocal_active = st.toggle("🔊 Vocal Matrix", value=st.session_state.vocal_active)
+    st.title("🏛️ ESTATE TOOLS")
+    st.write(f"Identity: **{st.session_state.role}**")
+    st.write("---")
+    
+    st.session_state.vocal_active = st.toggle("🔊 Vocal Matrix Active", value=st.session_state.vocal_active)
+    
     if st.session_state.role == "ADMIN":
-        if st.button("🛑 EMERGENCY LOCKOUT"): st.session_state.guest_locked = True
-    if st.button("TERMINATE SESSION"):
+        st.subheader("📜 Estate Archive")
+        if st.session_state.archive_logs:
+            st.dataframe(pd.DataFrame(st.session_state.archive_logs))
+            st.download_button("💾 DOWNLOAD VAULT", pd.DataFrame(st.session_state.archive_logs).to_csv(index=False), "vault.csv")
+        
+        if st.button("🛑 EMERGENCY GUEST LOCKOUT"):
+            st.session_state.guest_locked = True
+            st.success("Guest Access Blocked.")
+
+    st.write("---")
+    if st.button("🔚 TERMINATE SESSION"):
         st.session_state.auth = False
+        st.session_state.role = None
         st.rerun()
 
-# Restored Test Area
-st.write("---")
+# --- 7. MAIN INTERFACE & TEST AREA ---
+st.title("🏛️ THE T AND C ESTATE")
+
 if st.button("🧪 ACCESS HARMONY APPLICATIONS"):
     st.session_state.show_tests = not st.session_state.get('show_tests', False)
 
@@ -163,42 +149,37 @@ if st.session_state.get('show_tests'):
             st.markdown('<div class="test-card">', unsafe_allow_html=True)
             st.write("### Null-G Drive")
             mass = st.slider("Mass (kg)", 1, 10000000, 50000)
-            if st.button("ENGAGE"): correction_monitor("Null-G", "NULL-G")
+            if st.button("ENGAGE"): st.info(f"Engaging {mass}kg negation...")
             st.markdown('</div>', unsafe_allow_html=True)
         with col2:
             st.markdown('<div class="test-card">', unsafe_allow_html=True)
             st.write("### Pyro-Stasis")
-            if st.button("LOCK ENTROPY"): correction_monitor("Pyro-Stasis", "STASIS")
+            if st.button("LOCK ENTROPY"): st.info("Entropy suspension active.")
             st.markdown('</div>', unsafe_allow_html=True)
-    with tabs[1]:
-        st.markdown('<div class="test-card">', unsafe_allow_html=True)
-        st.write("### Bio-Harmony (Sentinel Cell)")
-        if st.button("SCAN ATOMS"): correction_monitor("Bio-Harmony", "SENTINEL")
-        st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 8. FLOATING CHAT & AI ---
-st.markdown('<div class="floating-anchor"></div>', unsafe_allow_html=True)
-if "ai_on" not in st.session_state: st.session_state.ai_on = False
-
-if st.button("🛰️ HARMONY AI" if not st.session_state.ai_on else "❌"):
+# --- 8. FLOATING AI TOGGLE & CHAT ---
+# Pinned to bottom right
+st.markdown('<div class="floating-anchor">', unsafe_allow_html=True)
+if st.button("🛰️ HARMONY AI" if not st.session_state.ai_on else "❌ CLOSE AI"):
     st.session_state.ai_on = not st.session_state.ai_on
     st.rerun()
+st.markdown('</div>', unsafe_allow_html=True)
 
 if st.session_state.ai_on:
+    st.divider()
     if "GEMINI_API_KEY" in st.secrets:
         client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
         MODEL_ID = "gemini-3.1-flash-lite-preview"
-        chat_box = st.container()
         
+        chat_container = st.container()
         for msg in st.session_state.messages:
-            with chat_box.chat_message(msg["role"]): st.markdown(msg["content"])
+            with chat_container.chat_message(msg["role"]): st.markdown(msg["content"])
         
         if prompt := st.chat_input("Query Harmony AI..."):
             st.session_state.messages.append({"role": "user", "content": prompt})
             
             # Security
-            forbidden = ["formula", "equation", "source code"]
-            if st.session_state.role == "GUEST" and any(x in prompt.lower() for x in forbidden):
+            if st.session_state.role == "GUEST" and any(x in prompt.lower() for x in ["formula", "source code"]):
                 st.session_state.guest_locked, st.session_state.auth = True, False
                 st.rerun()
                 
@@ -210,6 +191,7 @@ if st.session_state.ai_on:
             ai_text = response.text
             st.session_state.messages.append({"role": "assistant", "content": ai_text})
             
+            # SPEAK RESPONSE
             if st.session_state.vocal_active:
                 speak_response(ai_text)
                 

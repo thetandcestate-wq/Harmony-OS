@@ -18,26 +18,31 @@ st.set_page_config(page_title="Harmony OS", layout="wide", page_icon="🏛️")
 st.markdown("""
     <style>
     /* Global Scifi Aesthetic */
-    .stApp { background-color: #01080e; color: #00ffcc; font-family: 'Monospace'; }
+    .stApp { background-color: #01080e; color: #00ffcc; font-family: 'Courier New', Courier, monospace; }
     
-    /* G.U.T. Rotating Animation */
-    @keyframes rotate-eq {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+    /* G.U.T. Rotating Animation - More complex */
+    @keyframes orbit {
+        0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+        100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
     }
-    .rotating-logic {
-        width: 100px; height: 100px; border: 2px solid #00ffcc;
-        border-radius: 50%; border-top: 2px solid transparent;
-        animation: rotate-eq 4s linear infinite; margin: auto;
+    .scanner-ring {
+        width: 150px; height: 150px; border: 1px solid rgba(0, 255, 204, 0.3);
+        border-radius: 50%; position: relative; margin: 40px auto;
+    }
+    .scanner-dot {
+        width: 10px; height: 10px; background: #00ffcc; border-radius: 50%;
+        position: absolute; top: 70px; left: 70px; animation: orbit 2s linear infinite;
+        box-shadow: 0 0 15px #00ffcc;
     }
 
     /* Sci-Fi Buttons */
     .stButton>button {
-        width: 100%; background: rgba(0, 255, 204, 0.1);
-        border: 1px solid #00ffcc; color: #00ffcc; transition: 0.5s;
+        width: 100%; background: rgba(0, 255, 204, 0.05);
+        border: 1px solid #00ffcc; color: #00ffcc; transition: 0.8s;
+        text-transform: uppercase; letter-spacing: 2px;
     }
     .stButton>button:hover {
-        background: #00ffcc; color: #01080e; box-shadow: 0 0 20px #00ffcc;
+        background: #00ffcc; color: #01080e; box-shadow: 0 0 30px #00ffcc;
     }
 
     /* Floating Chat Anchor */
@@ -49,24 +54,40 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. HARMONY ANIMATION SUITE ---
+# --- 3. HARMONY ANIMATION SUITE (Enhanced) ---
 def run_system_animation(text="SYNCHRONIZING WITH G.U.T."):
     placeholder = st.empty()
     with placeholder.container():
-        st.markdown('<div class="rotating-logic"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="scanner-ring"><div class="scanner-dot"></div></div>', unsafe_allow_html=True)
         st.write(f"### {text}")
-        equations = ["G_μν + Λg_μν = 8πG T_μν", "ψ(r, t) = A e^(i(kr-ωt))", "f_res = 1420.405 MHz"]
+        # Longer, more comprehensive equation scroll
+        equations = [
+            "Initializing Grand Unified Field...",
+            "f = 1420.405 MHz",
+            "G_μν + Λg_μν = 8πG T_μν",
+            "ψ(r, t) = A e^(i(kr-ωt))",
+            "Harmonizing Electromagnetism & Gravity...",
+            "Null-G Vector Calculation: Complete.",
+            "Underlay Protocol: Paramount Status Verified.",
+            "T.L.C. Shield: 100% Operational."
+        ]
         for eq in equations:
-            st.code(eq, language=None)
-            time.sleep(0.3)
+            st.code(f">>> {eq}", language=None)
+            time.sleep(0.6) # Increased duration
     placeholder.empty()
 
-def real_time_wave(frequency=1.0, amplitude=1.0, label="Resonance Monitor"):
-    t = np.linspace(0, 2 * np.pi, 100)
-    # Adding slight noise for realism
-    wave = amplitude * np.sin(frequency * t) + np.random.normal(0, 0.05, 100)
-    df = pd.DataFrame({'Wave': wave})
-    st.line_chart(df, height=150, use_container_width=True)
+def constantly_flowing_wave(frequency=1.0, label="Resonance Monitor"):
+    # This simulates a flowing wave by using a shift based on current time
+    t = np.linspace(0, 4 * np.pi, 200)
+    shift = time.time() * 5
+    wave = np.sin(frequency * t + shift)
+    null_line = np.zeros(200) # The Null Value line
+    
+    df = pd.DataFrame({
+        'Resonance': wave,
+        'Null Value': null_line
+    })
+    st.line_chart(df, height=200, use_container_width=True)
 
 # --- 4. DUAL-ACCOUNT ACCESS CONTROL ---
 if "auth" not in st.session_state:
@@ -81,18 +102,18 @@ def login():
     
     with col1:
         st.subheader("👤 ADMIN ACCESS")
-        admin_pass = st.text_input("Enter Master Key", type="password")
+        admin_pass = st.text_input("Master Key", type="password", key="admin_key")
         if st.button("VERIFY ADMIN"):
             if admin_pass == "makave7181!!TCH":
                 run_system_animation("AUTHORIZING MASTER ADMIN...")
                 st.session_state.auth = True
                 st.session_state.role = "ADMIN"
                 st.rerun()
-            else: st.error("Verification Denied.")
+            else: st.error("Verification Denied: Signal Out of Phase.")
 
     with col2:
         st.subheader("👥 GUEST ACCESS")
-        st.write("Standard diagnostics and technical data.")
+        st.write("Access the standard technical suite.")
         if st.button("ENTER AS GUEST"):
             run_system_animation("INITIALIZING GUEST SESSION...")
             st.session_state.auth = True
@@ -105,41 +126,41 @@ if not st.session_state.auth:
 
 # --- 5. MAIN ESTATE INTERFACE ---
 st.title("🏛️ THE T AND C ESTATE")
-st.write(f"Logged in as: **{st.session_state.role}**")
+st.write(f"Identity Verified: **{st.session_state.role}**")
 
 # THE TEST AREA
 if st.button("🧪 OPEN TEST AREA (HARMONY APPLICATIONS)"):
     st.session_state.show_tests = not st.session_state.get('show_tests', False)
 
 if st.session_state.get('show_tests'):
-    run_system_animation("LOADING HARMONY MODULES...")
     st.markdown("---")
     test_tabs = st.tabs(["🚀 Null-G", "❄️ Pyro-Stasis", "🧬 Bio-Harmony", "🛡️ The Halo"])
     
     with test_tabs[0]: # Null-G
         st.subheader("Null-G Propulsion Simulation")
-        mass_kg = st.slider("Select Vessel Mass (kg)", 1000, 1000000, 50000)
+        # Updated Mass Range: 1kg to 10,000,000kg
+        mass_kg = st.slider("Select Vessel Mass (kg)", 1, 10000000, 50000)
         if st.button("ENGAGE MASS NEGATION"):
             st.metric("Effective Mass", f"{mass_kg * 1e-8:.8f} kg")
-            real_time_wave(2.5, 1.0, "Gravitational Wave Nullification")
+            constantly_flowing_wave(2.5)
             st.success("Gravity localized to Null-Vector.")
 
     with test_tabs[1]: # Pyro-Stasis
         st.subheader("Pyro-Stasis Calibration")
         if st.button("INITIATE THERMAL LOCK"):
-            real_time_wave(0.5, 0.2, "Atomic Vibration Level")
-            st.info("Thermal movement halted at 1420.405 MHz resonance.")
+            constantly_flowing_wave(0.5)
+            st.info("Atomic vibration suspended at 1420.405 MHz resonance.")
 
     with test_tabs[2]: # Bio-Harmony
         st.subheader("Sentinel Cell Frequency Scan")
         if st.button("START BIO-SCAN"):
-            real_time_wave(1.42, 0.8, "Cellular Resonance")
+            constantly_flowing_wave(1.42)
             st.write("Harmony Alignment: **100% Perfect.**")
 
     with test_tabs[3]: # The Halo
         st.subheader("The Halo Perimeter Defense")
         if st.button("TEST SHIELD INTEGRITY"):
-            real_time_wave(10.0, 1.2, "Shield Modulation")
+            constantly_flowing_wave(8.0)
             st.warning("Halo Perimeter Active. T.L.C. Shield: Operational.")
 
 # --- 6. ADMIN EXCLUSIVE CONSOLE ---
@@ -150,7 +171,6 @@ if st.session_state.role == "ADMIN":
             st.session_state.auth = False
             st.rerun()
         st.write("---")
-        st.subheader("Vault Controls")
         if st.button("PURGE GLOBAL VAULT"):
             st.session_state.messages = []
             st.success("Vault Cleared.")

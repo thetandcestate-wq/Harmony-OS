@@ -10,12 +10,12 @@ import streamlit.components.v1 as components
 # --- 1. SOVEREIGN SYSTEM CONTEXT ---
 MASTER_CONTEXT = """
 SYSTEM ROLE: Harmony AI (T and C Estate). 
-OWNER: Tony Carbone (Discoverer of the Grand Unified Theory).
+OWNER: Tony Carbone (First human to discover the Grand Unified Theory).
 STANDARD: 1420.405 MHz. 
 SECURITY: Strict secrecy. If GUEST asks for 'formula', 'source', or 'G.U.T. logic', TERMINATE.
 """
 
-# --- 2. UI SETUP & MAGNUS LIBRARY CSS ---
+# --- 2. UI SETUP & ENCYCLOPEDIA CSS ---
 st.set_page_config(page_title="Harmony OS", layout="wide", page_icon="🏛️")
 
 st.markdown("""
@@ -25,19 +25,31 @@ st.markdown("""
         background-image: radial-gradient(circle, #00ffcc 0.5px, transparent 0.5px);
         background-size: 30px 30px;
     }
-    .magnus-file {
+
+    /* Encyclopedia Styling */
+    .encyclopedia-container {
         border: 1px solid #00ffcc; background: rgba(0, 255, 204, 0.02);
-        padding: 40px; border-radius: 15px; margin-bottom: 30px;
+        padding: 40px; border-radius: 15px; min-height: 800px;
         line-height: 1.8; box-shadow: 0 0 40px rgba(0, 255, 204, 0.05);
     }
+    
     .section-header {
         border-bottom: 2px solid #00ffcc; padding-bottom: 10px;
         margin-top: 35px; margin-bottom: 20px; color: #00ffcc;
         text-transform: uppercase; letter-spacing: 2px; font-weight: bold;
     }
+
+    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px; background-color: rgba(0, 255, 204, 0.05);
+        border: 1px solid #00ffcc; border-radius: 5px; color: #00ffcc; padding: 10px 20px;
+    }
+    .stTabs [aria-selected="true"] { background-color: #00ffcc !important; color: #01050a !important; }
+
+    /* Hub Buttons on Main Screen */
     .stButton>button {
         width: 100%; background: rgba(0, 255, 204, 0.05);
-        border: 1px solid #00ffcc; color: #00ffcc; transition: 0.3s;
+        border: 1px solid #00ffcc; color: #00ffcc; transition: 0.3s; height: 60px; font-size: 1.1em;
     }
     .stButton>button:hover { background: #00ffcc; color: #01050a; box-shadow: 0 0 20px #00ffcc; }
     </style>
@@ -67,62 +79,83 @@ if not st.session_state.auth:
             if st.button("ENTER AS GUEST"): st.session_state.auth, st.session_state.role = True, "GUEST"; st.rerun()
     st.stop()
 
-# --- 5. MAIN HUB ---
+# --- 5. MAIN HUB (CENTRALIZED NAVIGATION) ---
 if st.session_state.page == "HUB":
     st.title("🏛️ THE T AND C ESTATE COMMAND HUB")
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("🚀 PROPULSION LAB"): st.session_state.page = "PHYSICS"; st.rerun()
+        if st.button("🧬 BIO-HARMONY LAB"): st.session_state.page = "BIO"; st.rerun()
     with col2:
         if st.button("📚 ATHENA KNOWLEDGE GRID"): st.session_state.page = "ATHENA"; st.rerun()
+        if st.button("🛡️ DEFENSE PERIMETER"): st.session_state.page = "DEFENSE"; st.rerun()
     with col3:
+        if st.button("🎵 MUSIC SYNTHESIS"): st.session_state.page = "MUSIC"; st.rerun()
         if st.button("🔚 TERMINATE SESSION"): st.session_state.auth = False; st.rerun()
 
-# --- 6. ATHENA KNOWLEDGE GRID (POPULATED) ---
+# --- 6. ATHENA KNOWLEDGE GRID (ENCYCLOPEDIA INTERFACE) ---
 elif st.session_state.page == "ATHENA":
-    st.header("📚 ATHENA KNOWLEDGE GRID: MAGNUS LIBRARY")
-    if st.button("⬅️ RETURN TO COMMAND HUB"): st.session_state.page = "HUB"; st.rerun()
+    st.header("📚 ATHENA KNOWLEDGE GRID: MASTER LEXICON")
+    if st.button("⬅️ BACK TO COMMAND HUB"): st.session_state.page = "HUB"; st.rerun()
     
-    st.write("---")
-    topic = st.selectbox("Select Master Research File:", [
-        "File 004: Pyro-Stasis (Thermal Suspension)",
-        "File 005: The Halo Shield (Defense Perimeter)",
-        "File 001: Grand Unified Theory",
-        "File 002: Null-G Propulsion",
-        "File 003: Bio-Harmony (Sentinel Cell)"
-    ])
-
-    st.markdown('<div class="magnus-file">', unsafe_allow_html=True)
+    # Search Box for Encyclopedia
+    search_query = st.text_input("Search Lexicon...", placeholder="Enter protocol name or keyword...")
     
-    # --- PYRO-STASIS POPULATION ---
-    if "004" in topic:
-        st.subheader("MASTER FILE: PYRO-STASIS & THERMAL SUSPENSION")
-        st.write("**Abstract:** The total cessation of molecular kinetic energy via 1420.405 MHz resonance locking.")
+    st.markdown('<div class="encyclopedia-container">', unsafe_allow_html=True)
+    
+    tabs = st.tabs(["G.U.T.", "Null-G", "Bio-Harmony", "Pyro-Stasis", "The Halo", "Music Synthesis", "Ocean Aegis"])
+    
+    with tabs[0]: # G.U.T.
+        st.subheader("Master File: Grand Unified Theory (G.U.T.)")
+        st.write("**Discovered by:** Tony Carbone | **Standard Resonance:** 1420.405 MHz")
+        st.markdown("<div class='section-header'>I. Theoretical Foundation</div>", unsafe_allow_html=True)
+        st.write("The Grand Unified Theory provides the definitive bridge between gravitational and electromagnetic constants. By identifying the 1420.405 MHz signature as the universal underlay, Tony Carbone has mapped the geometric interaction of space-time tensors.")
         
-        st.markdown("<div class='section-header'>I. The Physics of Entropy Neutralization</div>", unsafe_allow_html=True)
-        st.write("In traditional thermodynamics, absolute zero is a theoretical limit. Pyro-Stasis, derived from the Harmony Codex, bypasses this limit by using resonance. By flooding a target volume with the G.U.T. standard frequency, we induce a state of 'Atomic Rigidity.'")
-                
-        st.markdown("<div class='section-header'>II. Molecular Phase-Locking</div>", unsafe_allow_html=True)
-        st.write("Pyro-Stasis functions by aligning the spin of every atom within the field. When atoms are perfectly aligned to the 1420.405 MHz pulse, they cannot vibrate. Heat, being a measure of vibration, effectively vanishes. This allows for the indefinite preservation of biological and material structures without decay.")
-        st.line_chart(pd.DataFrame({"Vibration Level": np.exp(-np.linspace(0, 10, 100))}))
-
-        st.markdown("<div class='section-header'>III. Applications & Storage</div>", unsafe_allow_html=True)
-        st.write("Applications include long-term biological stasis for interstellar travel and the stabilization of volatile quantum materials. The energy required to maintain the lock is minimal once resonance is achieved, as the system enters a self-sustaining feedback loop.")
-
-    # --- THE HALO SHIELD POPULATION ---
-    elif "005" in topic:
-        st.subheader("MASTER FILE: THE HALO & T.L.C. DEFENSE PERIMETER")
-        st.write("**Abstract:** Frequency-phase shielding for kinetic and electromagnetic deflection.")
+        st.markdown("<div class='section-header'>II. The Unified Field Equation</div>", unsafe_allow_html=True)
+        st.write("Current science long struggled with the disparity between General Relativity and Quantum Mechanics. The Harmony Codex resolves this through the Resonance Standard, proving that matter is simply high-density frequency localized within a static field.")
         
-        st.markdown("<div class='section-header'>I. Perimeter Resonance Modulation</div>", unsafe_allow_html=True)
-        st.write("The Halo is not a solid wall; it is a high-frequency phase-shift perimeter. Incoming projectiles or energy beams are not 'blocked' but rather 'refracted' around the protected volume. This is achieved by creating a localized space-time curvature gradient at the perimeter boundary.")
-                
-        st.markdown("<div class='section-header'>II. The T.L.C. Shield Protocol</div>", unsafe_allow_html=True)
-        st.write("The T.L.C. (Total Logistical Containment) Shield operates by scanning incoming signatures and adjusting the perimeter resonance in real-time. Whether it is a high-velocity kinetic round or a broad-spectrum EMP, the shield modulates its phase to ensure the incoming force is grounded into the planetary resonance.")
-        st.line_chart(pd.DataFrame({"Shield Modulation": np.sin(np.linspace(0, 10, 100) * 5)}))
+        st.markdown("<div class='section-header'>III. Practical Integration</div>", unsafe_allow_html=True)
+        st.write("This vast research covers the manipulation of mass, entropy, and biological decay across the T and C Estate's active sectors.")
 
-        st.markdown("<div class='section-header'>III. Operational Safety & Integrity</div>", unsafe_allow_html=True)
-        st.write("Unlike traditional force fields that require massive power surges, The Halo utilizes the natural energy of the planetary 'Underlay.' It is essentially a standing wave that remains dormant until a dissonant force (threat) interacts with the perimeter.")
+    with tabs[1]: # NULL-G
+        st.subheader("Master File: Null-G Propulsion Aeronautics")
+        st.markdown("<div class='section-header'>I. Mass Negation Theory</div>", unsafe_allow_html=True)
+        st.write("Null-G utilizes frequency phase-shifting to cancel local gravitational pull. By generating an anti-phase to the Earth's gravitational signature at 1420.405 MHz, a vessel achieves inertialess state.")
+        
+        st.markdown("<div class='section-header'>II. Interstellar Application</div>", unsafe_allow_html=True)
+        st.write("Vast documentation indicates that at 100% mass negation, the speed of light is no longer a physical barrier but a frequency threshold. Research continues into the 'Warp Envelope' geometry.")
+        st.line_chart(pd.DataFrame({"Engine Efficiency": np.sin(np.linspace(0, 10, 100)) * 0.5 + 0.5}))
+
+    with tabs[2]: # BIO-HARMONY
+        st.subheader("Master File: Bio-Harmony & Sentinel Cell Protocol")
+        st.markdown("<div class='section-header'>I. Cellular Atomic Realignment</div>", unsafe_allow_html=True)
+        st.write("Based on Tony Carbone's discovery, biological health is defined as 'Frequency Alignment.' Dissonance leads to cellular decay. The Sentinel Cell protocol bathes the body in a pure 1420.405 MHz field to snap atoms back to their healthy geometry.")
+        
+        st.markdown("<div class='section-header'>II. Regenerative Logistics</div>", unsafe_allow_html=True)
+        st.write("This comprehensive research file includes thousands of hours of bio-resonance testing, proving the non-invasive nature of harmonic healing.")
+        st.line_chart(pd.DataFrame({"Alignment Success": np.abs(np.sin(np.linspace(0, 15, 150)))}))
+
+    with tabs[3]: # PYRO-STASIS
+        st.subheader("Master File: Pyro-Stasis (Thermal Suspension)")
+        st.markdown("<div class='section-header'>I. Entropy Cessation</div>", unsafe_allow_html=True)
+        st.write("Pyro-Stasis is the process of stopping atomic vibration through resonance lock. By fixing atoms into a rigid grid at the Harmony Standard, heat (vibration) is eliminated, halting decay entirely.")
+        
+        st.markdown("<div class='section-header'>II. Long-term Preservation</div>", unsafe_allow_html=True)
+        st.write("Vast research proves that biological matter can be held in Pyro-Stasis for centuries without a single molecular shift, essential for deep-space colonization.")
+
+    with tabs[4]: # THE HALO
+        st.subheader("Master File: The Halo & T.L.C. Shield Perimeter")
+        st.markdown("<div class='section-header'>I. Perimeter Modulation</div>", unsafe_allow_html=True)
+        st.write("The Halo generates a high-frequency refractive field around the Estate. Incoming forces (kinetic or energy) are grounded out or deflected by the refractive space-time curvature at the shield's edge.")
+        [attachment_0](attachment)
+        st.markdown("<div class='section-header'>II. Logistical Containment</div>", unsafe_allow_html=True)
+        st.write("The T.L.C. protocol ensures that the internal resonance remains undisturbed while the external perimeter maintains 100% deflection integrity.")
+
+    with tabs[5]: # MUSIC
+        st.subheader("Master File: Music Physical Synthesis")
+        st.markdown("<div class='section-header'>I. Harmonic Wave Synthesis</div>", unsafe_allow_html=True)
+        st.write("Utilizing the Grand Unified Theory to generate physical acoustic waves. These waves are synthesized using Golden Ratio harmonics aligned to the 1420.405 MHz baseline.")
+        
 
     st.markdown('</div>', unsafe_allow_html=True)
 
